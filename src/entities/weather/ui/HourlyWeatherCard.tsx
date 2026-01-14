@@ -1,13 +1,11 @@
-import type { WeatherIconKey } from "@/entities/weather/model/types";
+import type { HourlyWeatherItem } from "@/entities/weather/model/types";
 import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
 
-type Props = {
-  hour: string;
-  temp: string;
-  weatherIcon?: WeatherIconKey;
-};
-
-export function HourlyWeatherCard({ hour, temp, weatherIcon }: Props) {
+export function HourlyWeatherCard({
+  hour,
+  temp,
+  weatherIcon,
+}: HourlyWeatherItem) {
   const icon = weatherIcon ? WEATHER_ICON_MAP[weatherIcon] : "🚨";
 
   return (

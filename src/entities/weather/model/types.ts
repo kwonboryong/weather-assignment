@@ -8,7 +8,7 @@ export type WeatherIconKey =
   | "fog"
   | "wind";
 
-// 공통 데이터
+// 공통 날씨 정보
 export type WeatherSummaryBaseData = {
   location: string;
   currentTemp: number;
@@ -17,20 +17,20 @@ export type WeatherSummaryBaseData = {
   weatherIcon?: WeatherIconKey;
 };
 
-// 메인 데이터
+// 메인(WeatherSummaryCard) - 오늘 날짜
 export type WeatherSummaryDefaultData = WeatherSummaryBaseData & {
   dayOfWeek: string;
   date: string;
 };
 
-// 메인
+// 메인(WeatherSummaryCard)
 export interface DefaultVariantProps {
-  className?: string;
   variant: "default";
+  className?: string;
   data: WeatherSummaryDefaultData;
 }
 
-// 즐겨찾기
+// 즐겨찾기(WeatherSummaryCard)
 export interface FavoriteVariantProps {
   variant: "favorite";
   className?: string;
@@ -42,3 +42,10 @@ export interface FavoriteVariantProps {
 export type WeatherSummaryCardProps =
   | DefaultVariantProps
   | FavoriteVariantProps;
+
+// 시간대별 날씨 정보
+export type HourlyWeatherItem = {
+  hour: string;
+  temp: string;
+  weatherIcon?: WeatherIconKey;
+};
