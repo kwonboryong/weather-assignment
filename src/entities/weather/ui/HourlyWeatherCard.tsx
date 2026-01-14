@@ -7,30 +7,30 @@ type Props = {
   weatherIcon?: WeatherIconKey;
 };
 
-export function WeatherHourlyTempCard({ hour, temp, weatherIcon }: Props) {
+export function HourlyWeatherCard({ hour, temp, weatherIcon }: Props) {
   const icon = weatherIcon ? WEATHER_ICON_MAP[weatherIcon] : "🚨";
 
   return (
     <article
       className="
-        w-20 h-36 px-2 py-4
+        w-20 h-36 px-2 py-5
         rounded-2xl bg-[#7284FF] text-white
-        sm:w-24 sm:h-44 sm:px-3 sm:py-7
+        sm:w-24 sm:h-44 sm:px-3 sm:py-8
         md:w-28 md:h-48
       "
     >
       <header className="text-center">
         <p className="text-xs sm:text-sm">{hour}</p>
         <div
-          className="grid mt-2 text-4xl leading-none select-none place-items-center sm:text-5xl"
+          className="grid mt-3 text-4xl leading-none select-none place-items-center sm:text-5xl"
           aria-hidden
         >
           {icon}
         </div>
       </header>
 
-      <footer className="mt-3 text-center sm:mt-4">
-        <p className="text-sm font-semibold sm:text-base">{temp}</p>
+      <footer className="mt-4 text-center sm:mt-5">
+        <p className="text-sm font-semibold sm:text-xl">{temp}</p>
       </footer>
     </article>
   );
