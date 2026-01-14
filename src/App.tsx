@@ -1,29 +1,10 @@
-import { useState } from "react";
-import "./App.css";
+import { RouterProvider } from "./app/providers/router-provider";
+import { QueryProvider } from "./app/providers/query-provider";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
-    <>
-      <div className={"p-4 rounded bg-red-400"}>
-        <a href="https://vite.dev" target="_blank"></a>
-        <a href="https://react.dev" target="_blank"></a>
-      </div>
-
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <QueryProvider>
+      <RouterProvider />
+    </QueryProvider>
   );
 }
-
-export default App;
