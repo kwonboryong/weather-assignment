@@ -69,14 +69,14 @@ export default function HomePage() {
               <BookmarkButton
                 active
                 ariaLabel="즐겨찾기 페이지로 이동"
-                onClick={() => navigate("/BookmarkPage")}
+                onClick={() => navigate("/bookmark")}
               />
             </div>
           </div>
 
           {/* 인사 */}
           <div className="mt-5 ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight text-slate-900 md:text-6xl">
+            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 md:text-6xl">
               <span className="block text-indigo-400/90">Hi,</span>
               <span className="block">Good</span>
               <span className="block">Morning</span>
