@@ -26,7 +26,7 @@ export function WeatherSummaryCard(props: WeatherSummaryCardProps) {
       className={`
         w-full 
         ${isFavorite ? "max-w-[320px]" : "max-w-[500px]"}
-        bg-white/80 backdrop-blur-sm
+        bg-white backdrop-blur-sm
         border-none shadow-lg
         transition-all duration-200 
         relative

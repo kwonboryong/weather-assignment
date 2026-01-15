@@ -9,14 +9,7 @@ export function HourlyWeatherCard({
   const icon = weatherIcon ? WEATHER_ICON_MAP[weatherIcon] : "🚨";
 
   return (
-    <article
-      className="
-        w-20 h-36 px-2 py-5
-        rounded-2xl bg-[#7284FF] text-white
-        sm:w-24 sm:h-44 sm:px-3 sm:py-8
-        md:w-28 md:h-48
-      "
-    >
+    <article className="w-20 px-2 py-5 text-white bg-indigo-500  h-36 rounded-2xl sm:w-24 sm:h-44 sm:px-3 sm:py-8 md:w-28 md:h-48">
       <header className="text-center">
         <p className="text-xs sm:text-sm">{hour}</p>
         <div
