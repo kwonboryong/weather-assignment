@@ -33,68 +33,59 @@ export default function HomePage() {
   }, [query]);
 
   return (
-    <div className="bg-slate-50 min-h-dvh">
-      {/* 헤더 영역 */}
-      <header className="sticky top-0 z-10 border-b bg-slate-50/80 backdrop-blur">
-        <div className="flex items-center justify-between w-full max-w-6xl gap-3 px-4 py-3 mx-auto">
-          {/* 검색바 */}
-          <form
-            role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
+    <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
+      <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto h-dvh">
+        <section className="grid flex-none min-h-0 gap-10 md:grid-cols-12">
+          {/* 검색바 + 즐겨찾기 */}
+          <div className="flex justify-end md:col-span-12">
+            <div className="flex w-full max-w-[540px] items-center gap-3">
+              <form
+                role="search"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (items[0]) {
+                    navigate(`/location/${items[0].id}`);
+                    setOpen(false);
+                  }
+                }}
+                className="relative flex-1"
+              >
+                <SearchBar
+                  value={query}
+                  items={items}
+                  open={open}
+                  onChange={(v) => {
+                    setQuery(v);
+                    setOpen(Boolean(v.trim()));
+                  }}
+                  onSelect={(item) => {
+                    navigate(`/location/${item.id}`);
+                    setOpen(false);
+                  }}
+                  onClose={() => setOpen(false)}
+                />
+              </form>
 
-              if (items[0]) {
-                navigate(`/location/${items[0].id}`);
-                setOpen(false);
-              }
-            }}
-            className="relative w-full max-w-xl"
-          >
-            <SearchBar
-              value={query}
-              items={items}
-              open={open}
-              onChange={(v) => {
-                setQuery(v);
-                setOpen(Boolean(v.trim()));
-              }}
-              onSelect={(item) => {
-                navigate(`/location/${item.id}`);
-                setOpen(false);
-              }}
-              onClose={() => setOpen(false)}
-            />
-          </form>
+              <BookmarkButton
+                active
+                ariaLabel="즐겨찾기 페이지로 이동"
+                onClick={() => navigate("/BookmarkPage")}
+              />
+            </div>
+          </div>
 
-          {/* 즐겨찾기 */}
-          <BookmarkButton
-            active
-            ariaLabel="즐겨찾기 페이지로 이동"
-            onClick={() => navigate("/BookmarkPage")}
-          />
-        </div>
-      </header>
-
-      <main className="w-full max-w-6xl px-4 py-6 mx-auto bg-red-300">
-        {/* 미들 영역 */}
-        <section
-          aria-labelledby="home-overview-title"
-          className="grid gap-6 md:grid-cols-12"
-        >
           {/* 인사 */}
-          <div className="md:col-span-5">
-            <h1
-              id="home-overview-title"
-              className="text-3xl font-semibold leading-tight text-slate-900 md:text-5xl"
-            >
-              <span className="block text-slate-500">Hi,</span>
-              <span className="block">Good Morning</span>
+          <div className="mt-5 ml-7 md:col-span-6">
+            <h1 className="text-4xl font-bold leading-tight text-slate-900 md:text-6xl">
+              <span className="block text-indigo-400/90">Hi,</span>
+              <span className="block">Good</span>
+              <span className="block">Morning</span>
             </h1>
           </div>
 
-          {/* 날씨 정보 카드 */}
-          <div className="md:col-span-7">
-            <article>
+          {/* 날씨 요약 카드 */}
+          <div className="flex justify-end md:col-span-6">
+            <div className="w-full max-w-[720px]">
               <WeatherSummaryCard
                 variant="default"
                 data={{
@@ -107,12 +98,16 @@ export default function HomePage() {
                   maxTemp: 32,
                 }}
               />
-            </article>
+            </div>
           </div>
         </section>
 
         {/* 시간대별 날씨 리스트 */}
-        <HourlyWeatherSection items={hourlyWeatherItems} />
+        <section>
+          <div className="h-full px-6 py-1">
+            <HourlyWeatherSection items={hourlyWeatherItems} />
+          </div>
+        </section>
       </main>
     </div>
   );
