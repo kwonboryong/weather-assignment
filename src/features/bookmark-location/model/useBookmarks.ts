@@ -20,22 +20,28 @@ function writeBookmarks(ids: string[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
 }
 
-export function useBookmarkToggle() {
+export function useBookmarks() {
   const [ids, setIds] = useState<string[]>(() => readBookmarks());
 
   const isBookmarked = useCallback((id: string) => ids.includes(id), [ids]);
 
-  const toggle = useCallback(
-    (id: string) => {
-      const next = ids.includes(id)
-        ? ids.filter((x) => x !== id)
-        : [...ids, id];
+  const toggle = useCallback((id: string) => {
+    const current = readBookmarks();
+    const next = current.includes(id)
+      ? current.filter((x) => x !== id)
+      : [...current, id];
 
-      setIds(next);
-      writeBookmarks(next);
-    },
-    [ids]
-  );
+    setIds(next);
+    writeBookmarks(next);
+  }, []);
 
-  return { ids, isBookmarked, toggle };
+  const remove = useCallback((id: string) => {
+    const current = readBookmarks();
+    const next = current.filter((x) => x !== id);
+
+    setIds(next);
+    writeBookmarks(next);
+  }, []);
+
+  return { ids, isBookmarked, toggle, remove };
 }
