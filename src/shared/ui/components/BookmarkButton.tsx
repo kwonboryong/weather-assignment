@@ -1,0 +1,31 @@
+import { Bookmark } from "lucide-react";
+
+type Props = {
+  active?: boolean;
+  ariaLabel: string;
+  className?: string;
+  disabled?: boolean;
+  onClick: () => void;
+};
+
+export function BookmarkButton({
+  active = false,
+  ariaLabel,
+  onClick,
+  className,
+  disabled = false,
+}: Props) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      onClick={onClick}
+      disabled={disabled}
+      className={`bg-white border rounded-full h-11 w-11 shrink-0 inline-flex items-center justify-center transition-colors ${
+        disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-100"
+      } ${className ?? ""}`}
+    >
+      <Bookmark className={`h-5 w-5 ${active ? "fill-current" : ""}`} />
+    </button>
+  );
+}
