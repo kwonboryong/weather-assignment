@@ -4,10 +4,12 @@ import { SearchBar } from "@/shared/ui/components/SearchBar";
 import { useMemo, useState } from "react";
 import type { LocationItem } from "@/shared/ui/components/LocationDropdown";
 import { useNavigate } from "react-router-dom";
+import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
+  // 날씨 정보 더미 데이터
   const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
     hour: `${17 + i}시`,
     temp: "28°C",
@@ -65,7 +67,11 @@ export default function HomePage() {
           </form>
 
           {/* 즐겨찾기 */}
-          {/* <BookmarkToggleButton /> */}
+          <BookmarkButton
+            active
+            ariaLabel="즐겨찾기 페이지로 이동"
+            onClick={() => navigate("/BookmarkPage")}
+          />
         </div>
       </header>
 
@@ -88,7 +94,7 @@ export default function HomePage() {
 
           {/* 날씨 정보 카드 */}
           <div className="md:col-span-7">
-            <article className="">
+            <article>
               <WeatherSummaryCard
                 variant="default"
                 data={{
