@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "@/shared/ui/components/BackButton";
 import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
@@ -32,13 +31,13 @@ export default function LocationDetailPage() {
   const hourlyWeatherItems = toHourlyWeatherItems(hourlyQuery.data);
 
   // 장소명 변환
-  const placeLabel = useMemo(
-    () => (locationId ? locationId.replaceAll("-", " ") : ""),
-    [locationId]
-  );
+  const placeLabel = locationId ? locationId.replaceAll("-", " ") : "";
+  const [region, ...rest] = (placeLabel || "장소 정보").split(" ");
+  const detail = rest.join(" ");
 
   // 예외처리
-  const isNoPlaceInfo = coordsQuery.isError || coords === null;
+  const isCoordsPending = coordsQuery.isPending;
+  const isNoPlaceInfo = coordsQuery.isSuccess && coords === null;
 
   return (
     <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -53,28 +52,26 @@ export default function LocationDetailPage() {
               onClick={() => navigate("/bookmark")}
             />
           </div>
+
           {/* 장소명 */}
           <div className="mt-5 ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 md:text-6xl">
-              {placeLabel || "장소 정보"}
+            <h1 className="text-4xl font-extrabold leading-tight select-none text-slate-900 md:text-6xl">
+              <span className="block mb-5 text-indigo-500">{region}</span>
+              {detail ? <span className="block">{detail}</span> : null}
             </h1>
           </div>
 
           {/* 날씨 요약 카드 */}
           <div className="flex justify-end md:col-span-6">
             <div className="w-full max-w-[720px]">
-              {isNoPlaceInfo ? (
-                <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-                  해당 장소의 정보가 제공되지 않습니다.
-                </div>
-              ) : weatherQuery.isLoading ? (
-                <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-                  날씨 요약 불러오는 중...
-                </div>
-              ) : weatherQuery.isError ? (
-                <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-                  날씨 요약 정보를 불러올 수 없습니다.
-                </div>
+              {isCoordsPending ? (
+                <StateBox text="장소 정보를 불러오는 중..." />
+              ) : isNoPlaceInfo ? (
+                <StateBox text="해당 장소의 정보가 제공되지 않습니다." />
+              ) : weatherQuery.isPending ? (
+                <StateBox text="날씨 요약 불러오는 중..." />
+              ) : weatherQuery.isError || !weatherQuery.data ? (
+                <StateBox text="날씨 요약 정보를 불러올 수 없습니다." />
               ) : (
                 <WeatherSummaryCard
                   variant="default"
@@ -82,11 +79,11 @@ export default function LocationDetailPage() {
                     location: placeLabel || "장소 정보",
                     dayOfWeek,
                     date,
-                    currentTemp: weatherQuery.data?.main.temp ?? 0,
-                    minTemp: weatherQuery.data?.main.temp_min ?? 0,
-                    maxTemp: weatherQuery.data?.main.temp_max ?? 0,
+                    currentTemp: weatherQuery.data.main.temp,
+                    minTemp: weatherQuery.data.main.temp_min,
+                    maxTemp: weatherQuery.data.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      weatherQuery.data?.weather?.[0]?.main
+                      weatherQuery.data.weather?.[0].main
                     ),
                   }}
                 />
@@ -96,17 +93,13 @@ export default function LocationDetailPage() {
         </section>
 
         {/* 시간대별 날씨 리스트 */}
-        {isNoPlaceInfo ? null : (
+        {isCoordsPending || isNoPlaceInfo ? null : (
           <section>
             <div className="h-full px-6 py-1">
-              {hourlyQuery.isLoading ? (
-                <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-                  시간대별 날씨 불러오는 중...
-                </div>
-              ) : hourlyQuery.isError ? (
-                <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-                  시간대별 날씨 정보를 불러올 수 없습니다.
-                </div>
+              {hourlyQuery.isPending ? (
+                <StateBox text="시간대별 날씨 불러오는 중..." />
+              ) : hourlyQuery.isError || !hourlyQuery.data ? (
+                <StateBox text="시간대별 날씨 정보를 불러올 수 없습니다." />
               ) : (
                 <HourlyWeatherSection items={hourlyWeatherItems} />
               )}
@@ -117,3 +110,9 @@ export default function LocationDetailPage() {
     </div>
   );
 }
+
+const StateBox = ({ text }: { text: string }) => (
+  <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
+    {text}
+  </div>
+);
