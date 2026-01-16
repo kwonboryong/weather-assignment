@@ -16,6 +16,7 @@ export function useCurrentWeatherByCoords(coords: Coords | null) {
       return reverseGeocode(coords);
     },
     enabled: !!coords,
+    refetchOnWindowFocus: false,
   });
 
   const weatherQuery = useQuery({
@@ -26,6 +27,7 @@ export function useCurrentWeatherByCoords(coords: Coords | null) {
       return getCurrentWeather(coords);
     },
     enabled: !!coords,
+    refetchOnWindowFocus: false,
   });
 
   const locationLabel = locationQuery.data
@@ -45,5 +47,6 @@ export function useHourlyWeatherByCoords(coords: Coords | null) {
       return getHourlyWeather(coords);
     },
     enabled: !!coords,
+    refetchOnWindowFocus: false,
   });
 }
