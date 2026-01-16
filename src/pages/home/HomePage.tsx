@@ -1,21 +1,18 @@
+import { SearchBar } from "@/shared/ui/components/SearchBar";
+import type { LocationItem } from "@/shared/ui/components/LocationDropdown";
+import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
 import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
-import { SearchBar } from "@/shared/ui/components/SearchBar";
 import { useMemo, useState } from "react";
-import type { LocationItem } from "@/shared/ui/components/LocationDropdown";
 import { useNavigate } from "react-router-dom";
-import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
+import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
+import { useCurrentWeatherByCoords } from "@/entities/weather/model/useWeatherQuery";
+import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
-  // 날씨 정보 더미 데이터
-  const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
-    hour: `${17 + i}시`,
-    temp: "28°C",
-    weatherIcon: "sun" as const,
-  }));
-
+  // 드롭다운
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -31,6 +28,23 @@ export default function HomePage() {
     if (!q) return [];
     return all.filter((x) => x.title.includes(q));
   }, [query]);
+
+  // 현재 위치 좌표
+  const { coords, error: geoError } = useDetectLocation();
+
+  // 위치 기반 날씨 조회
+  const { locationQuery, weatherQuery, locationLabel } =
+    useCurrentWeatherByCoords(coords);
+
+  const weather = weatherQuery.data;
+  // console.log(weatherQuery);
+
+  // 시간대별 날씨 더미 데이터
+  const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
+    hour: `${17 + i}시`,
+    temp: "28°C",
+    weatherIcon: "sun" as const,
+  }));
 
   return (
     <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -86,18 +100,30 @@ export default function HomePage() {
           {/* 날씨 요약 카드 */}
           <div className="flex justify-end md:col-span-6">
             <div className="w-full max-w-[720px]">
-              <WeatherSummaryCard
-                variant="default"
-                data={{
-                  location: "Dhaka, Bangladesh",
-                  dayOfWeek: "Sunday",
-                  date: "04 Aug, 2024",
-                  weatherIcon: "rain",
-                  currentTemp: 28,
-                  minTemp: 22,
-                  maxTemp: 32,
-                }}
-              />
+              {geoError ? (
+                <div>{geoError}</div>
+              ) : !coords ? (
+                <div>현재 위치 확인 중...</div>
+              ) : locationQuery.isLoading || weatherQuery.isLoading ? (
+                <div>불러오는 중...</div>
+              ) : locationQuery.isError ? (
+                <div>{(locationQuery.error as Error).message}</div>
+              ) : weatherQuery.isError ? (
+                <div>{(weatherQuery.error as Error).message}</div>
+              ) : (
+                <WeatherSummaryCard
+                  variant="default"
+                  data={{
+                    location: locationLabel,
+                    dayOfWeek: "Sunday",
+                    date: "04 Aug, 2024",
+                    currentTemp: weather.main.temp,
+                    minTemp: weather.main.temp_min,
+                    maxTemp: weather.main.temp_max,
+                    weatherIcon: mapOpenWeatherIcon(weather.weather?.[0]?.main),
+                  }}
+                />
+              )}
             </div>
           </div>
         </section>
