@@ -1,28 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@/shared/ui/components/BackButton";
-import type { WeatherSummaryBaseData } from "@/entities/weather/model/types";
 import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
-
-// 북마크 location -> 카드에 넣을 data를 만드는 함수(추후 교체)
-// 캐시/쿼리에서 해당 location의 current/min/max/icon 가져오기
-function getSummaryByLocation(location: string): WeatherSummaryBaseData {
-  return {
-    location,
-    currentTemp: 28,
-    minTemp: 24,
-    maxTemp: 30,
-    weatherIcon: "rain",
-  };
-}
+import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
 
 export default function BookmarkPage() {
   const navigate = useNavigate();
   const { ids, remove } = useBookmarks();
 
-  // 중복이 들어와도 1번만 렌더링
-  const uniqueIds = Array.from(new Set(ids));
-  const visibleIds = uniqueIds.slice(0, 6);
+  // 중복 제거 + 최대 6개
+  const visibleIds = Array.from(new Set(ids)).slice(0, 6);
+
+  // 북마크 데이터
+  const summaries = useBookmarkSummaries(visibleIds);
 
   // 예외 처리
   const isEmpty = visibleIds.length === 0;
@@ -49,17 +39,42 @@ export default function BookmarkPage() {
           </p>
         ) : (
           <section className="grid grid-cols-1 gap-4 justify-items-center sm:gap-6 lg:grid-cols-2 xl:grid-cols-3 xl:gap-8">
-            {visibleIds.map((location) => (
-              <WeatherSummaryCard
-                key={location}
-                variant="favorite"
-                data={getSummaryByLocation(location)}
-                onClick={() =>
-                  navigate(`/location/${encodeURIComponent(location)}`)
-                }
-                onRemove={() => remove(location)}
-              />
-            ))}
+            {visibleIds.map((id, idx) =>
+              summaries[idx]?.isPending ? (
+                <div
+                  key={id}
+                  className="w-full max-w-[320px] h-[220px] rounded-xl bg-white/70 flex items-center justify-center text-slate-700"
+                >
+                  불러오는 중...
+                </div>
+              ) : summaries[idx]?.isError || !summaries[idx]?.data ? (
+                <div
+                  key={id}
+                  className="w-full max-w-[320px] h-[220px] rounded-xl bg-white/70 flex flex-col items-center justify-center gap-3 text-slate-700"
+                >
+                  <span className="text-sm">
+                    날씨 정보를 불러올 수 없습니다.
+                  </span>
+                  <button
+                    type="button"
+                    className="text-sm text-indigo-600 underline"
+                    onClick={() => remove(id)}
+                  >
+                    즐겨찾기에서 제거
+                  </button>
+                </div>
+              ) : (
+                <WeatherSummaryCard
+                  key={id}
+                  variant="favorite"
+                  data={summaries[idx]!.data}
+                  onClick={() =>
+                    navigate(`/location/${encodeURIComponent(id)}`)
+                  }
+                  onRemove={() => remove(id)}
+                />
+              )
+            )}
           </section>
         )}
       </main>
