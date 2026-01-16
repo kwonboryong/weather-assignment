@@ -43,9 +43,32 @@ export type WeatherSummaryCardProps =
   | DefaultVariantProps
   | FavoriteVariantProps;
 
+// 위치 기반 날씨 정보
+export type CurrentWeatherResponse = {
+  main: {
+    temp: number;
+    temp_min: number;
+    temp_max: number;
+  };
+  weather: Array<{
+    main: string;
+  }>;
+};
+
 // 시간대별 날씨 정보
 export type HourlyWeatherItem = {
   hour: string;
   temp: string;
   weatherIcon?: WeatherIconKey;
+};
+
+export type HourlyWeather = {
+  dt: number;
+  temp: number;
+  weather: Array<{ main: string }>;
+};
+
+export type HourlyWeatherResponse = {
+  hourly: HourlyWeather[];
+  timezone_offset: number;
 };
