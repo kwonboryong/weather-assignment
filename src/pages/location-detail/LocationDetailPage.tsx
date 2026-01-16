@@ -11,6 +11,8 @@ import {
 } from "@/entities/weather/model/useWeatherQuery";
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
 import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
+import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
+import toast from "react-hot-toast";
 
 export default function LocationDetailPage() {
   const navigate = useNavigate();
@@ -18,6 +20,21 @@ export default function LocationDetailPage() {
 
   // 오늘 날짜
   const { dayOfWeek, date } = getTodayLabel();
+
+  // 북마크
+  const { isBookmarked, toggle } = useBookmarks();
+  const placeId = locationId ?? "";
+  const bookmarked = placeId ? isBookmarked(placeId) : false;
+
+  const handleToggleBookmark = () => {
+    if (!placeId) return;
+
+    const result = toggle(placeId);
+
+    if (result === "limit") {
+      toast.error("즐겨찾기는 최대 6개까지 추가할 수 있어요.");
+    }
+  };
 
   // 장소명 → 좌표
   const coordsQuery = useForwardGeocode(locationId);
@@ -47,9 +64,10 @@ export default function LocationDetailPage() {
           <div className="flex items-center justify-between md:col-span-12">
             <BackButton onClick={() => navigate(-1)} ariaLabel={"뒤로가기"} />
             <BookmarkButton
-              active
-              ariaLabel="즐겨찾기 페이지로 이동"
-              onClick={() => navigate("/bookmark")}
+              active={bookmarked}
+              ariaLabel={bookmarked ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+              disabled={!placeId}
+              onClick={handleToggleBookmark}
             />
           </div>
 
