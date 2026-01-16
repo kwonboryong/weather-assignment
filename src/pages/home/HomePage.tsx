@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
 import { useCurrentWeatherByCoords } from "@/entities/weather/model/useWeatherQuery";
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
+import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function HomePage() {
     useCurrentWeatherByCoords(coords);
 
   const weather = weatherQuery.data;
-  // console.log(weatherQuery);
+  console.log(weatherQuery);
 
   // 시간대별 날씨 더미 데이터
   const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
@@ -45,6 +46,9 @@ export default function HomePage() {
     temp: "28°C",
     weatherIcon: "sun" as const,
   }));
+
+  // 오늘 요일/날짜
+  const { dayOfWeek, date } = getTodayLabel();
 
   return (
     <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -115,8 +119,8 @@ export default function HomePage() {
                   variant="default"
                   data={{
                     location: locationLabel,
-                    dayOfWeek: "Sunday",
-                    date: "04 Aug, 2024",
+                    dayOfWeek,
+                    date,
                     currentTemp: weather.main.temp,
                     minTemp: weather.main.temp_min,
                     maxTemp: weather.main.temp_max,
