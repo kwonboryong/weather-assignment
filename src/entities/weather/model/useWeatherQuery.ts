@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 import { reverseGeocode } from "@/shared/lib/geocoding";
-import { getCurrentWeather } from "@/entities/weather/model/weatherApi";
+import {
+  getCurrentWeather,
+  getHourlyWeather,
+} from "@/entities/weather/model/weatherApi";
 
+// 현재 위치 기반 날씨
 export function useCurrentWeatherByCoords(coords: Coords | null) {
-  const enabled = !!coords;
-
   const locationQuery = useQuery({
     queryKey: ["reverse-geocode", coords?.lat, coords?.lon],
     queryFn: () => {
@@ -13,7 +15,7 @@ export function useCurrentWeatherByCoords(coords: Coords | null) {
 
       return reverseGeocode(coords);
     },
-    enabled,
+    enabled: !!coords,
   });
 
   const weatherQuery = useQuery({
@@ -23,14 +25,25 @@ export function useCurrentWeatherByCoords(coords: Coords | null) {
 
       return getCurrentWeather(coords);
     },
-    enabled,
+    enabled: !!coords,
   });
 
   const locationLabel = locationQuery.data
-    ? `${locationQuery.data.local_names?.ko ?? locationQuery.data.name}, ${
-        locationQuery.data.country
-      }`
+    ? `${locationQuery.data.local_names?.ko ?? locationQuery.data.name}`
     : "위치 확인 중...";
 
   return { locationQuery, weatherQuery, locationLabel };
+}
+
+// 시간대별 날씨
+export function useHourlyWeatherByCoords(coords: Coords | null) {
+  return useQuery({
+    queryKey: ["hourly-weather", coords?.lat, coords?.lon],
+    queryFn: () => {
+      if (!coords) throw new Error("hourly coords가 없습니다.");
+
+      return getHourlyWeather(coords);
+    },
+    enabled: !!coords,
+  });
 }

@@ -6,14 +6,21 @@ import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
-import { useCurrentWeatherByCoords } from "@/entities/weather/model/useWeatherQuery";
+import {
+  useCurrentWeatherByCoords,
+  useHourlyWeatherByCoords,
+} from "@/entities/weather/model/useWeatherQuery";
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
-import { getHomeViewState } from "@/pages/home/model/getHomeViewState";
-import { HomeViewFallback } from "./ui/HomeViewFallback";
+import { ViewFallback } from "@/shared/ui/ViewFallback";
+import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
+import { getWeatherViewStates } from "./model/useWeatherViewStates";
 
 export default function HomePage() {
   const navigate = useNavigate();
+
+  // 오늘 날짜
+  const { dayOfWeek, date } = getTodayLabel();
 
   // 드롭다운
   const [query, setQuery] = useState("");
@@ -39,25 +46,19 @@ export default function HomePage() {
   const { locationQuery, weatherQuery, locationLabel } =
     useCurrentWeatherByCoords(coords);
 
-  const weather = weatherQuery.data;
-  // console.log(weather);
+  // 시간대별 날씨
+  const hourlyQuery = useHourlyWeatherByCoords(coords);
 
-  // 시간대별 날씨 더미 데이터
-  const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
-    hour: `${17 + i}시`,
-    temp: "28°C",
-    weatherIcon: "sun" as const,
-  }));
+  const hourlyWeatherItems = toHourlyWeatherItems(hourlyQuery.data);
 
-  // 오늘 요일/날짜
-  const { dayOfWeek, date } = getTodayLabel();
+  // 로딩/에러 UI - 날씨 조회, 시간대별 날씨
+  const geo = { coords, error: geoError };
 
-  // 위치 감지 - 로딩 UI
-  const viewState = getHomeViewState({
-    geoError,
-    coords,
+  const { summaryViewState, hourlyViewState } = getWeatherViewStates({
+    geo,
     locationQuery,
     weatherQuery,
+    hourlyQuery,
   });
 
   return (
@@ -114,8 +115,8 @@ export default function HomePage() {
           {/* 날씨 요약 카드 */}
           <div className="flex justify-end md:col-span-6">
             <div className="w-full max-w-[720px]">
-              {viewState.type !== "ready" ? (
-                <HomeViewFallback state={viewState} />
+              {summaryViewState.type !== "ready" ? (
+                <ViewFallback state={summaryViewState} />
               ) : (
                 <WeatherSummaryCard
                   variant="default"
@@ -123,10 +124,12 @@ export default function HomePage() {
                     location: locationLabel,
                     dayOfWeek,
                     date,
-                    currentTemp: weather.main.temp,
-                    minTemp: weather.main.temp_min,
-                    maxTemp: weather.main.temp_max,
-                    weatherIcon: mapOpenWeatherIcon(weather.weather?.[0]?.main),
+                    currentTemp: weatherQuery.data!.main.temp,
+                    minTemp: weatherQuery.data!.main.temp_min,
+                    maxTemp: weatherQuery.data!.main.temp_max,
+                    weatherIcon: mapOpenWeatherIcon(
+                      weatherQuery.data!.weather?.[0]?.main
+                    ),
                   }}
                 />
               )}
@@ -137,7 +140,11 @@ export default function HomePage() {
         {/* 시간대별 날씨 리스트 */}
         <section>
           <div className="h-full px-6 py-1">
-            <HourlyWeatherSection items={hourlyWeatherItems} />
+            {hourlyViewState.type !== "ready" ? (
+              <ViewFallback state={hourlyViewState} />
+            ) : (
+              <HourlyWeatherSection items={hourlyWeatherItems} />
+            )}
           </div>
         </section>
       </main>
