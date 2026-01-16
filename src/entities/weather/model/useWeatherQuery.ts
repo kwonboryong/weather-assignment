@@ -27,7 +27,9 @@ export function useCurrentWeatherByCoords(coords: Coords | null) {
   });
 
   const locationLabel = locationQuery.data
-    ? `${locationQuery.data.name}, ${locationQuery.data.country}`
+    ? `${locationQuery.data.local_names?.ko ?? locationQuery.data.name}, ${
+        locationQuery.data.country
+      }`
     : "위치 확인 중...";
 
   return { locationQuery, weatherQuery, locationLabel };
