@@ -16,7 +16,7 @@ export function getCurrentPosition(): Promise<Coords> {
         });
       },
       (err) => reject(new Error(err.message || "위치 권한이 필요해요.")),
-      { timeout: 10_000 }
+      { timeout: 20_000 }
     );
   });
 }
