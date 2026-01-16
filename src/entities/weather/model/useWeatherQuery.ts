@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
-import { reverseGeocode } from "@/shared/lib/geocoding";
+import { reverseGeocode } from "@/shared/lib/geocoding/geocodingApi";
 import {
   getCurrentWeather,
   getHourlyWeather,
