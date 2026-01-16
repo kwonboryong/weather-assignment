@@ -15,6 +15,7 @@ import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import { ViewFallback } from "@/shared/ui/ViewFallback";
 import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
 import { getWeatherViewStates } from "./model/useWeatherViewStates";
+import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -26,18 +27,17 @@ export default function HomePage() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
-  // 드롭다운 더미 데이터
-  const items: LocationItem[] = useMemo(() => {
-    const all = [
-      { id: "1", title: "서울특별시 종로구", subtitle: "KR" },
-      { id: "2", title: "서울특별시 강남구", subtitle: "KR" },
-      { id: "3", title: "부산광역시 해운대구", subtitle: "KR" },
-    ];
+  // 검색 훅(입력값 → 매칭 결과)
+  const { results } = usePlaceSearch(query);
 
-    const q = query.trim();
-    if (!q) return [];
-    return all.filter((x) => x.title.includes(q));
-  }, [query]);
+  // SearchBar가 받는 LocationItem[] 형태로 매핑
+  const items: LocationItem[] = useMemo(() => {
+    return results.map((p) => ({
+      id: p.full,
+      title: p.label,
+      subtitle: "KR",
+    }));
+  }, [results]);
 
   // 현재 위치 좌표
   const { coords, error: geoError } = useDetectLocation();

@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 
 const STORAGE_KEY = "weatherapp:bookmarks";
+const MAX_BOOKMARKS = 6;
+
+type ToggleType = "added" | "removed" | "limit";
 
 function readBookmarks(): string[] {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -25,14 +28,27 @@ export function useBookmarks() {
 
   const isBookmarked = useCallback((id: string) => ids.includes(id), [ids]);
 
-  const toggle = useCallback((id: string) => {
-    const current = readBookmarks();
-    const next = current.includes(id)
-      ? current.filter((x) => x !== id)
-      : [...current, id];
+  const toggle = useCallback((id: string): ToggleType => {
+    const current = Array.from(new Set(readBookmarks()));
+
+    if (current.includes(id)) {
+      const next = current.filter((x) => x !== id);
+
+      setIds(next);
+      writeBookmarks(next);
+      return "removed";
+    }
+
+    if (current.length >= MAX_BOOKMARKS) {
+      return "limit";
+    }
+
+    const next = [...current, id];
 
     setIds(next);
     writeBookmarks(next);
+
+    return "added";
   }, []);
 
   const remove = useCallback((id: string) => {
