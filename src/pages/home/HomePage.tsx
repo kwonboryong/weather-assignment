@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
 import { useCurrentWeatherByCoords } from "@/entities/weather/model/useWeatherQuery";
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
+import { getTodayLabel } from "@/shared/lib/getTodayLabel";
+import { getHomeViewState } from "@/pages/home/model/getHomeViewState";
+import { HomeViewFallback } from "./ui/HomeViewFallback";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -37,7 +40,7 @@ export default function HomePage() {
     useCurrentWeatherByCoords(coords);
 
   const weather = weatherQuery.data;
-  // console.log(weatherQuery);
+  // console.log(weather);
 
   // 시간대별 날씨 더미 데이터
   const hourlyWeatherItems = Array.from({ length: 8 }).map((_, i) => ({
@@ -45,6 +48,17 @@ export default function HomePage() {
     temp: "28°C",
     weatherIcon: "sun" as const,
   }));
+
+  // 오늘 요일/날짜
+  const { dayOfWeek, date } = getTodayLabel();
+
+  // 위치 감지 - 로딩 UI
+  const viewState = getHomeViewState({
+    geoError,
+    coords,
+    locationQuery,
+    weatherQuery,
+  });
 
   return (
     <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -100,23 +114,15 @@ export default function HomePage() {
           {/* 날씨 요약 카드 */}
           <div className="flex justify-end md:col-span-6">
             <div className="w-full max-w-[720px]">
-              {geoError ? (
-                <div>{geoError}</div>
-              ) : !coords ? (
-                <div>현재 위치 확인 중...</div>
-              ) : locationQuery.isLoading || weatherQuery.isLoading ? (
-                <div>불러오는 중...</div>
-              ) : locationQuery.isError ? (
-                <div>{(locationQuery.error as Error).message}</div>
-              ) : weatherQuery.isError ? (
-                <div>{(weatherQuery.error as Error).message}</div>
+              {viewState.type !== "ready" ? (
+                <HomeViewFallback state={viewState} />
               ) : (
                 <WeatherSummaryCard
                   variant="default"
                   data={{
                     location: locationLabel,
-                    dayOfWeek: "Sunday",
-                    date: "04 Aug, 2024",
+                    dayOfWeek,
+                    date,
                     currentTemp: weather.main.temp,
                     minTemp: weather.main.temp_min,
                     maxTemp: weather.main.temp_max,
