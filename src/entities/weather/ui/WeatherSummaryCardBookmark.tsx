@@ -3,6 +3,7 @@ import { MapPin, Pencil, X } from "lucide-react";
 import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
 import type { WeatherSummaryBaseData } from "@/entities/weather/model/types";
 import { TempMetricBlock } from "@/entities/weather/ui/TempMetricBlock";
+import { CARD_SURFACE } from "./WeatherSummaryCardHome";
 
 type Props = {
   className?: string;
@@ -38,9 +39,9 @@ export function WeatherSummaryCardBookmark({
     <Card
       className={`
       w-full sm:max-w-[320px]
-      bg-white backdrop-blur-sm border-none shadow-lg
       transition-all duration-200 relative
-      cursor-pointer hover:shadow-xl hover:scale-[1.0]
+      cursor-pointer hover:shadow-lg hover:scale-[1.0]
+      ${CARD_SURFACE}
       ${className}
     `}
       onClick={onClick}
