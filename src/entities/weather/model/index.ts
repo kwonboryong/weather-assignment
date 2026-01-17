@@ -1,4 +1,1 @@
-export {
-  useCurrentWeatherByCoords,
-  useHourlyWeatherByCoords,
-} from "./useWeatherQueries";
+export { useCurrentWeather, useHourlyWeather } from "./useWeatherQueries";
