@@ -2,7 +2,7 @@ import type {
   CurrentWeatherResponse,
   HourlyWeatherResponse,
 } from "@/entities/weather/model/types";
-import type { ReverseGeoItem } from "@/entities/location/model/geocodingApi";
+import type { GeoItem } from "@/entities/location/model/geocodingApi";
 import {
   getViewState,
   type GeoState,
@@ -12,7 +12,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 
 type Params = {
   geo: GeoState;
-  locationQuery: UseQueryResult<ReverseGeoItem | null, Error>;
+  locationQuery: UseQueryResult<GeoItem | null, Error>;
   weatherQuery: UseQueryResult<CurrentWeatherResponse, Error>;
   hourlyQuery: UseQueryResult<HourlyWeatherResponse, Error>;
 };
