@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "@/shared/ui/components/BackButton";
 import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
-import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
+
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useForwardGeocode } from "@/features/search-location/model/useForwardGeocode";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
@@ -13,6 +13,7 @@ import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
 import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import toast from "react-hot-toast";
+import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
 
 export default function LocationDetailPage() {
   const navigate = useNavigate();
@@ -91,8 +92,7 @@ export default function LocationDetailPage() {
               ) : weatherQuery.isError || !weatherQuery.data ? (
                 <StateBox text="날씨 요약 정보를 불러올 수 없습니다." />
               ) : (
-                <WeatherSummaryCard
-                  variant="default"
+                <WeatherSummaryCardHome
                   data={{
                     location: placeLabel || "장소 정보",
                     dayOfWeek,

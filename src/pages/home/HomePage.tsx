@@ -1,7 +1,7 @@
 import { SearchBar } from "@/shared/ui/components/SearchBar";
 import type { LocationItem } from "@/shared/ui/components/LocationDropdown";
 import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
-import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
+
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import { ViewFallback } from "@/shared/ui/ViewFallback";
 import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
 import { getWeatherViewStates } from "./model/useWeatherViewStates";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
+import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -118,8 +119,7 @@ export default function HomePage() {
               {summaryViewState.type !== "ready" ? (
                 <ViewFallback state={summaryViewState} />
               ) : (
-                <WeatherSummaryCard
-                  variant="default"
+                <WeatherSummaryCardHome
                   data={{
                     location: locationLabel,
                     dayOfWeek,

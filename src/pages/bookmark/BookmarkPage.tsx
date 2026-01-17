@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@/shared/ui/components/BackButton";
-import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
+
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
 import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
 import { useState } from "react";
 import { EditAliasDialog } from "@/features/bookmark-location/ui/EditAliasDialog";
+import { WeatherSummaryCardBookmark } from "@/entities/weather/ui/WeatherSummaryCardBookmark";
 
 export default function BookmarkPage() {
   const navigate = useNavigate();
@@ -101,9 +102,10 @@ export default function BookmarkPage() {
                   </button>
                 </div>
               ) : (
-                <WeatherSummaryCard
+                <WeatherSummaryCardBookmark
                   key={id}
-                  variant="favorite"
+                  //
+
                   data={summaries[idx]!.data}
                   onClick={() =>
                     navigate(`/location/${encodeURIComponent(id)}`)
