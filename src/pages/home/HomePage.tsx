@@ -1,7 +1,6 @@
 import { SearchBar } from "@/shared/ui/SearchBar";
 import type { LocationItem } from "@/shared/ui/LocationDropdown";
 import { BookmarkButton } from "@/shared/ui/BookmarkButton";
-
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +13,9 @@ import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import { ViewFallback } from "@/shared/ui/ViewFallback";
 import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
-import { getWeatherViewStates } from "./model/useWeatherViewStates";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCard.Home";
+import { getViewState } from "@/shared/lib/getViewState";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -55,11 +54,16 @@ export default function HomePage() {
   // 로딩/에러 UI - 날씨 조회, 시간대별 날씨
   const geo = { coords, error: geoError };
 
-  const { summaryViewState, hourlyViewState } = getWeatherViewStates({
+  const summaryViewState = getViewState({
     geo,
-    locationQuery,
-    weatherQuery,
-    hourlyQuery,
+    queries: [locationQuery, weatherQuery],
+    messages: { loading: "날씨 요약 불러오는 중..." },
+  });
+
+  const hourlyViewState = getViewState({
+    geo,
+    queries: [hourlyQuery],
+    messages: { loading: "시간대별 날씨 불러오는 중..." },
   });
 
   return (
@@ -140,7 +144,6 @@ export default function HomePage() {
         {/* 시간대별 날씨 리스트 */}
         <section>
           <div className="h-full px-3 py-1 sm:px-6">
-            {/* <div className="h-full py-1"> */}
             {hourlyViewState.type !== "ready" ? (
               <ViewFallback state={hourlyViewState} />
             ) : (
