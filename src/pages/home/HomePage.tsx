@@ -8,13 +8,10 @@ import {
   HourlyWeatherSection,
   WeatherSummaryCardHome,
 } from "@/entities/weather/ui";
-import {
-  useCurrentWeatherByCoords,
-  useHourlyWeatherByCoords,
-} from "@/entities/weather/model";
 
 import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
+import { useWeatherByCoords } from "@/features/weather-by-coords/model/useWeatherByCoords";
 
 import {
   getTodayLabel,
@@ -48,25 +45,28 @@ export default function HomePage() {
   const { coords, error: geoError } = useDetectLocation();
 
   // 위치 기반 날씨 조회
-  const { locationQuery, weatherQuery, locationLabel } =
-    useCurrentWeatherByCoords(coords);
+  const {
+    locationQuery,
+    currentWeatherQuery,
+    hourlyWeatherQuery,
+    locationLabel,
+  } = useWeatherByCoords(coords, { withHourly: true });
 
   // 시간대별 날씨
-  const hourlyQuery = useHourlyWeatherByCoords(coords);
-  const hourlyWeatherItems = mapHourlyWeatherItems(hourlyQuery.data);
+  const hourlyWeatherItems = mapHourlyWeatherItems(hourlyWeatherQuery?.data);
 
   // Fallback UI - 날씨 조회, 시간대별 날씨
   const geo = { coords, error: geoError };
 
   const summaryViewState = getViewState({
     geo,
-    queries: [locationQuery, weatherQuery],
+    queries: [locationQuery, currentWeatherQuery],
     messages: { loading: "날씨 요약 불러오는 중..." },
   });
 
   const hourlyViewState = getViewState({
     geo,
-    queries: [hourlyQuery],
+    queries: hourlyWeatherQuery ? [hourlyWeatherQuery] : [],
     messages: { loading: "시간대별 날씨 불러오는 중..." },
   });
 
@@ -132,11 +132,11 @@ export default function HomePage() {
                     location: locationLabel,
                     dayOfWeek,
                     date,
-                    currentTemp: weatherQuery.data!.main.temp,
-                    minTemp: weatherQuery.data!.main.temp_min,
-                    maxTemp: weatherQuery.data!.main.temp_max,
+                    currentTemp: currentWeatherQuery.data!.main.temp,
+                    minTemp: currentWeatherQuery.data!.main.temp_min,
+                    maxTemp: currentWeatherQuery.data!.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      weatherQuery.data!.weather?.[0]?.main,
+                      currentWeatherQuery.data!.weather?.[0]?.main,
                     ),
                   }}
                 />
