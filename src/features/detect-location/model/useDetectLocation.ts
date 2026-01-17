@@ -3,7 +3,7 @@ import {
   getCurrentPosition,
   type Coords,
 } from "@/shared/lib/getCurrentPosition";
-import { mapGeolocationError } from "@/shared/lib/geocoding/mapGeolocationError";
+import { mapGeolocationError } from "@/shared/lib/mappers/mapGeolocationError";
 
 export function useDetectLocation() {
   const [coords, setCoords] = useState<Coords | null>(null);

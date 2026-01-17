@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { forwardGeocode } from "@/shared/lib/geocoding/geocodingApi";
+import { forwardGeocode } from "@/entities/location/model/geocodingApi";
 
 export function useForwardGeocode(placeFull: string | undefined) {
   return useQuery({

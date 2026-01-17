@@ -2,11 +2,11 @@ import type {
   HourlyWeatherItem,
   HourlyWeatherResponse,
 } from "@/entities/weather/model/types";
-import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
+import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 
-export function toHourlyWeatherItems(
+export function mapHourlyWeatherItems(
   data: HourlyWeatherResponse | undefined,
-  limit = 8
+  limit = 8,
 ): HourlyWeatherItem[] {
   if (!data?.hourly) return [];
 

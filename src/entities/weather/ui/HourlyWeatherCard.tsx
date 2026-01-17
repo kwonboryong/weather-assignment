@@ -1,5 +1,5 @@
 import type { HourlyWeatherItem } from "@/entities/weather/model/types";
-import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
+import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIconMap";
 
 export function HourlyWeatherCard({
   hour,

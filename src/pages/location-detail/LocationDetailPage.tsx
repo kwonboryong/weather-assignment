@@ -1,25 +1,29 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BackButton } from "@/shared/ui/components/BackButton";
-import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
+import toast from "react-hot-toast";
 
-import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
-import { useForwardGeocode } from "@/features/search-location/model/useForwardGeocode";
-import { getTodayLabel } from "@/shared/lib/getTodayLabel";
+import { BackButton, BookmarkButton } from "@/shared/ui";
+import {
+  getTodayLabel,
+  mapOpenWeatherIcon,
+  mapHourlyWeatherItems,
+} from "@/shared/lib";
+
+import {
+  HourlyWeatherSection,
+  WeatherSummaryCardHome,
+} from "@/entities/weather/ui";
 import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
-} from "@/entities/weather/model/useWeatherQuery";
-import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
-import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
+} from "@/entities/weather/model";
+
+import { useForwardGeocode } from "@/entities/location/model/useForwardGeocodeQuery";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
-import toast from "react-hot-toast";
-import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
 
 export default function LocationDetailPage() {
   const navigate = useNavigate();
   const { locationId } = useParams<{ locationId: string }>();
 
-  // 오늘 날짜
   const { dayOfWeek, date } = getTodayLabel();
 
   // 북마크
@@ -46,14 +50,14 @@ export default function LocationDetailPage() {
 
   // 시간대별 날씨
   const hourlyQuery = useHourlyWeatherByCoords(coords);
-  const hourlyWeatherItems = toHourlyWeatherItems(hourlyQuery.data);
+  const hourlyWeatherItems = mapHourlyWeatherItems(hourlyQuery.data);
 
   // 장소명 변환
   const placeLabel = locationId ? locationId.replaceAll("-", " ") : "";
   const [region, ...rest] = (placeLabel || "장소 정보").split(" ");
   const detail = rest.join(" ");
 
-  // 예외처리
+  // 예외 처리
   const isCoordsPending = coordsQuery.isPending;
   const isNoPlaceInfo = coordsQuery.isSuccess && coords === null;
 
@@ -101,7 +105,7 @@ export default function LocationDetailPage() {
                     minTemp: weatherQuery.data.main.temp_min,
                     maxTemp: weatherQuery.data.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      weatherQuery.data.weather?.[0].main
+                      weatherQuery.data.weather?.[0].main,
                     ),
                   }}
                 />

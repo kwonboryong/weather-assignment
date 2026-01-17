@@ -1,6 +1,6 @@
 import type { HourlyWeatherItem } from "@/entities/weather/model/types";
 import { HourlyWeatherCard } from "@/entities/weather/ui/HourlyWeatherCard";
-import { CARD_SURFACE } from "@/entities/weather/ui/WeatherSummaryCardHome";
+import { CARD_SURFACE } from "@/entities/weather/ui/WeatherSummaryCard.Home";
 
 type Props = {
   items: HourlyWeatherItem[];

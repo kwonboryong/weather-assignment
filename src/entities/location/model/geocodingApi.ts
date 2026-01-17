@@ -1,17 +1,7 @@
 import { instance } from "@/shared/api/axios";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 
-export type ReverseGeoItem = {
-  name: string;
-  country: string;
-  lat: number;
-  lon: number;
-  local_names?: {
-    ko?: string;
-  };
-};
-
-type ForwardGeoItem = {
+export type GeoItem = {
   name: string;
   country: string;
   lat: number;
@@ -25,8 +15,8 @@ type ForwardGeoItem = {
 export async function reverseGeocode({
   lat,
   lon,
-}: Coords): Promise<ReverseGeoItem | null> {
-  const res = await instance.get<ReverseGeoItem[]>("/geo/1.0/reverse", {
+}: Coords): Promise<GeoItem | null> {
+  const res = await instance.get<GeoItem[]>("/geo/1.0/reverse", {
     params: { lat, lon, limit: 1, lang: "ko" },
   });
 
@@ -40,7 +30,7 @@ export async function forwardGeocode(place: string): Promise<Coords | null> {
 
   // Geocoding API 호출
   const request = async (q: string): Promise<Coords | null> => {
-    const res = await instance.get<ForwardGeoItem[]>("/geo/1.0/direct", {
+    const res = await instance.get<GeoItem[]>("/geo/1.0/direct", {
       params: { q: `${q},KR`, limit: 1 },
     });
 

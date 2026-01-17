@@ -11,7 +11,7 @@ export type ViewState =
   | { type: "loading"; message: string }
   | { type: "ready" };
 
-export type GeoState = {
+type GeoState = {
   error?: string | null;
   coords?: { lat: number; lon: number } | null;
 };
