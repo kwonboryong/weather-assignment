@@ -53,86 +53,79 @@ export function WeatherSummaryCard(props: WeatherSummaryCardProps) {
         </button>
       )}
 
-      <CardContent className={isFavorite ? "p-5" : "p-6"}>
-        <div className="grid grid-cols-[1fr_auto] gap-3">
+      <CardContent className={isFavorite ? "p-5 h-[180px]" : "p-6"}>
+        <div className="grid h-full grid-cols-[minmax(0,1fr)_auto] gap-3">
           {/* 왼쪽 영역 */}
-          <div className={`flex flex-col ${isFavorite ? "gap-12" : "gap-2"}`}>
+          <div
+            className={`min-w-0 flex flex-col ${isFavorite ? "gap-0" : "gap-2"}`}
+          >
             {/* 위치 */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <div
-                  className={`inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full ${
-                    isFavorite ? "max-w-[180px]" : "w-fit"
-                  }`}
-                >
-                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span
-                    className={`text-xs font-medium ${
-                      isFavorite ? "truncate min-w-0" : ""
-                    }`}
+            <div className={isFavorite ? "h-[72px]" : ""}>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+                <div className="min-w-0 ">
+                  <div
+                    className={`
+                inline-flex items-center min-w-0 overflow-hidden gap-2 px-3 py-1.5
+                bg-indigo-500 text-white rounded-full
+                ${isFavorite ? "max-w-full" : "w-fit"}
+              `}
                   >
-                    {isFavorite ? (props.alias ?? location) : location}
-                  </span>
-                </div>
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span
+                      className={`text-xs font-medium ${isFavorite ? "truncate min-w-0" : ""}`}
+                    >
+                      {isFavorite ? (props.alias ?? location) : location}
+                    </span>
+                  </div>
 
-                {/* 별칭이 있으면 -> 원래 위치명 추가 */}
-                {isFavorite && props.alias ? (
-                  <p className="mt-2 text-[11px] text-slate-500 truncate max-w-[180px]">
+                  {/* 별칭이 있으면 -> 원래 위치명 추가 */}
+                  <p
+                    className={`mt-2 text-xs text-slate-600 truncate max-w-full ${isFavorite && props.alias ? "" : "invisible"}`}
+                  >
                     {location}
                   </p>
+                </div>
+
+                {/* 별칭 수정 */}
+                {isFavorite ? (
+                  <button
+                    type="button"
+                    aria-label="별칭 수정"
+                    onClick={handleEditClick}
+                    className="flex items-center justify-center flex-shrink-0 w-6 h-6 transition-colors rounded-full bg-gray-900/10 hover:bg-gray-900/20"
+                  >
+                    <Pencil className="w-3.5 h-3.5 text-gray-700" />
+                  </button>
                 ) : null}
               </div>
-
-              {/* 별칭 수정 */}
-              {isFavorite ? (
-                <button
-                  type="button"
-                  aria-label="별칭 수정"
-                  onClick={handleEditClick}
-                  className="flex items-center justify-center w-6 h-6 transition-colors rounded-full bg-gray-900/10 hover:bg-gray-900/20"
-                >
-                  <Pencil className="w-3.5 h-3.5 text-gray-700" />
-                </button>
-              ) : null}
             </div>
-
-            {/* 날짜 */}
-            {variant === "default" && (
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {props.data.dayOfWeek}
-                </h2>
-                <p className="mt-1 text-sm text-gray-600">{props.data.date}</p>
-              </div>
-            )}
-
-            {/* 현재 기온 + 날씨 아이콘 */}
-            <div className="flex items-center gap-3">
-              <span
-                className={`font-bold text-gray-900 ${
-                  isFavorite ? "text-4xl" : "text-5xl"
-                }`}
-              >
-                {round(currentTemp)}°C
-              </span>
-
-              {weatherIcon ? (
+            {/* 현재 기온 + 날씨 아이콘 */}{" "}
+            <div className={isFavorite ? "mt-auto" : ""}>
+              <div className="flex items-center gap-3">
                 <span
-                  className={
-                    isFavorite
-                      ? "text-5xl leading-none select-none"
-                      : "text-6xl leading-none select-none"
-                  }
-                  aria-hidden
+                  className={`font-bold text-gray-900 ${isFavorite ? "text-4xl" : "text-5xl"}`}
                 >
-                  {WEATHER_ICON_MAP[weatherIcon]}
+                  {round(currentTemp)}°C
                 </span>
-              ) : null}
+
+                {weatherIcon ? (
+                  <span
+                    className={
+                      isFavorite
+                        ? "text-5xl leading-none select-none"
+                        : "text-6xl leading-none select-none"
+                    }
+                    aria-hidden
+                  >
+                    {WEATHER_ICON_MAP[weatherIcon]}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
 
-          {/* 오른쪽 영역*/}
-          <div className="flex flex-col justify-center gap-2">
+          {/* 오른쪽 영역 */}
+          <div className="flex flex-col justify-center gap-2 shrink-0">
             <TempMetricBlock
               isCompact={isFavorite}
               label="최저 기온"
