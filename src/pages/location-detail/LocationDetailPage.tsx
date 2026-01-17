@@ -1,13 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { BackButton, BookmarkButton } from "@/shared/ui";
+import { BackButton, BookmarkButton, ViewFallback } from "@/shared/ui";
 import {
   HourlyWeatherSection,
   WeatherSummaryCardHome,
 } from "@/entities/weather/ui";
 
 import {
+  getViewState,
   getTodayLabel,
   mapOpenWeatherIcon,
   mapHourlyWeatherItems,
@@ -59,8 +60,34 @@ export default function LocationDetailPage() {
   const detail = rest.join(" ");
 
   // 예외 처리
-  const isCoordsPending = coordsQuery.isPending;
   const isNoPlaceInfo = coordsQuery.isSuccess && coords === null;
+
+  // Fallback UI - 날씨 조회, 시간대별 날씨
+  const geo = {
+    coords,
+    error: coordsQuery.isError ? "장소 정보를 불러올 수 없습니다." : null,
+  };
+
+  const noPlaceState = {
+    type: "error" as const,
+    message: "해당 장소의 정보가 제공되지 않습니다.",
+  };
+
+  const summaryViewState = isNoPlaceInfo
+    ? noPlaceState
+    : getViewState({
+        geo,
+        queries: [coordsQuery, currentWeatherQuery],
+        messages: { loading: "날씨 요약 불러오는 중..." },
+      });
+
+  const hourlyViewState = isNoPlaceInfo
+    ? noPlaceState
+    : getViewState({
+        geo,
+        queries: [coordsQuery, hourlyWeatherQuery!],
+        messages: { loading: "시간대별 날씨 불러오는 중..." },
+      });
 
   return (
     <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -88,25 +115,19 @@ export default function LocationDetailPage() {
           {/* 날씨 요약 카드 */}
           <div className="h-full px-3 py-1 sm:px-6 md:col-span-6">
             <div className="w-full max-w-[720px]">
-              {isCoordsPending ? (
-                <StateBox text="장소 정보를 불러오는 중..." />
-              ) : isNoPlaceInfo ? (
-                <StateBox text="해당 장소의 정보가 제공되지 않습니다." />
-              ) : currentWeatherQuery.isPending ? (
-                <StateBox text="날씨 요약 불러오는 중..." />
-              ) : currentWeatherQuery.isError || !currentWeatherQuery.data ? (
-                <StateBox text="날씨 요약 정보를 불러올 수 없습니다." />
+              {summaryViewState.type !== "ready" ? (
+                <ViewFallback state={summaryViewState} />
               ) : (
                 <WeatherSummaryCardHome
                   data={{
                     location: placeLabel || "장소 정보",
                     dayOfWeek,
                     date,
-                    currentTemp: currentWeatherQuery.data.main.temp,
-                    minTemp: currentWeatherQuery.data.main.temp_min,
-                    maxTemp: currentWeatherQuery.data.main.temp_max,
+                    currentTemp: currentWeatherQuery.data!.main.temp,
+                    minTemp: currentWeatherQuery.data!.main.temp_min,
+                    maxTemp: currentWeatherQuery.data!.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      currentWeatherQuery.data.weather?.[0].main,
+                      currentWeatherQuery.data?.weather?.[0].main,
                     ),
                   }}
                 />
@@ -116,13 +137,11 @@ export default function LocationDetailPage() {
         </section>
 
         {/* 시간대별 날씨 리스트 */}
-        {isCoordsPending || isNoPlaceInfo ? null : (
+        {isNoPlaceInfo ? null : (
           <section>
             <div className="h-full px-3 py-1 sm:px-6">
-              {hourlyWeatherQuery?.isPending ? (
-                <StateBox text="시간대별 날씨 불러오는 중..." />
-              ) : hourlyWeatherQuery?.isError || !hourlyWeatherQuery?.data ? (
-                <StateBox text="시간대별 날씨 정보를 불러올 수 없습니다." />
+              {hourlyViewState.type !== "ready" ? (
+                <ViewFallback state={hourlyViewState} />
               ) : (
                 <HourlyWeatherSection items={hourlyWeatherItems} />
               )}
@@ -133,9 +152,3 @@ export default function LocationDetailPage() {
     </div>
   );
 }
-
-const StateBox = ({ text }: { text: string }) => (
-  <div className="flex items-center justify-center w-full h-[220px] rounded-xl bg-white/70 text-slate-700">
-    {text}
-  </div>
-);
