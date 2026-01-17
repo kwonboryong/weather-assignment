@@ -35,17 +35,28 @@ export function EditAliasDialog({
         if (!nextOpen) onClose();
       }}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+      <DialogContent
+        className="
+          w-[calc(100vw-2rem)]
+          max-w-[520px]
+          rounded-2xl
+          px-5 py-6
+          sm:px-6 sm:py-7
+        "
+      >
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-lg sm:text-xl">{title}</DialogTitle>
+          <DialogDescription className="text-sm leading-relaxed sm:text-base break-keep">
+            {description}
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-2">
+        <div className="mt-3">
           <Input
             value={value}
             placeholder="예: 회사"
             autoFocus
+            className="h-11"
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") onSave();
@@ -53,11 +64,20 @@ export function EditAliasDialog({
           />
         </div>
 
-        <DialogFooter className="mt-4">
-          <Button type="button" variant="secondary" onClick={onClose}>
+        <DialogFooter className="flex flex-col-reverse gap-2 mt-5 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={onClose}
+          >
             취소
           </Button>
-          <Button type="button" onClick={onSave}>
+          <Button
+            type="button"
+            className="w-full bg-indigo-500 sm:w-auto"
+            onClick={onSave}
+          >
             저장
           </Button>
         </DialogFooter>
