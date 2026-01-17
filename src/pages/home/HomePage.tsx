@@ -9,7 +9,7 @@ import { useDetectLocation } from "@/features/detect-location/model/useDetectLoc
 import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
-} from "@/entities/weather/model/useWeatherQuery";
+} from "@/entities/weather/model/useWeatherQueries";
 import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import { ViewFallback } from "@/shared/ui/ViewFallback";

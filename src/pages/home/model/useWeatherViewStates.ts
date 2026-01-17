@@ -2,7 +2,7 @@ import type {
   CurrentWeatherResponse,
   HourlyWeatherResponse,
 } from "@/entities/weather/model/types";
-import type { ReverseGeoItem } from "@/shared/lib/geocoding/geocodingApi";
+import type { ReverseGeoItem } from "@/entities/location/model/geocodingApi";
 import {
   getViewState,
   type GeoState,

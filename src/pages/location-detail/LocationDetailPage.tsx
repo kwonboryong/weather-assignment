@@ -3,12 +3,12 @@ import { BackButton } from "@/shared/ui/BackButton";
 import { BookmarkButton } from "@/shared/ui/BookmarkButton";
 
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
-import { useForwardGeocode } from "@/features/search-location/model/useForwardGeocode";
+import { useForwardGeocode } from "@/entities/location/model/useForwardGeocodeQuery";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
-} from "@/entities/weather/model/useWeatherQuery";
+} from "@/entities/weather/model/useWeatherQueries";
 import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
