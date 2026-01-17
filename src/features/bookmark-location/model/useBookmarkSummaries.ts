@@ -2,7 +2,7 @@ import { useQueries } from "@tanstack/react-query";
 import type { WeatherSummaryBaseData } from "@/entities/weather/model/types";
 import { forwardGeocode } from "@/shared/lib/geocoding/geocodingApi";
 import { getCurrentWeather } from "@/entities/weather/model/weatherApi";
-import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
+import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 
 export type BookmarkSummary = WeatherSummaryBaseData & { id: string };
 

@@ -9,8 +9,8 @@ import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
 } from "@/entities/weather/model/useWeatherQuery";
-import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
-import { mapHourlyWeatherItems } from "@/shared/lib/mapHourlyWeatherItems";
+import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
+import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import toast from "react-hot-toast";
 import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";

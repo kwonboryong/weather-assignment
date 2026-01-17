@@ -10,10 +10,10 @@ import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
 } from "@/entities/weather/model/useWeatherQuery";
-import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
+import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import { ViewFallback } from "@/shared/ui/ViewFallback";
-import { mapHourlyWeatherItems } from "@/shared/lib/mapHourlyWeatherItems";
+import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
 import { getWeatherViewStates } from "./model/useWeatherViewStates";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
