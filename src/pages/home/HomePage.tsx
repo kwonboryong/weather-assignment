@@ -16,7 +16,7 @@ import { ViewFallback } from "@/shared/ui/ViewFallback";
 import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
 import { getWeatherViewStates } from "./model/useWeatherViewStates";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
-import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
+import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCard.Home";
 
 export default function HomePage() {
   const navigate = useNavigate();

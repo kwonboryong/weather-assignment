@@ -13,7 +13,7 @@ import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
 import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import toast from "react-hot-toast";
-import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
+import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCard.Home";
 
 export default function LocationDetailPage() {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { Card, CardContent } from "@/shared/ui/shadcn/card";
 import { MapPin, Pencil, X } from "lucide-react";
-import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
+import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIconMap";
 import type { WeatherSummaryBaseData } from "@/entities/weather/model/types";
 import { TempMetricBlock } from "@/entities/weather/ui/TempMetricBlock";
-import { CARD_SURFACE } from "./WeatherSummaryCardHome";
+import { CARD_SURFACE } from "./WeatherSummaryCard.Home";
 
 type Props = {
   className?: string;

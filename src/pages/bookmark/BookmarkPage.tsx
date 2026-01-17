@@ -5,7 +5,7 @@ import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBook
 import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
 import { useState } from "react";
 import { EditAliasDialog } from "@/features/bookmark-location/ui/EditAliasDialog";
-import { WeatherSummaryCardBookmark } from "@/entities/weather/ui/WeatherSummaryCardBookmark";
+import { WeatherSummaryCardBookmark } from "@/entities/weather/ui/WeatherSummaryCard.Bookmark";
 
 export default function BookmarkPage() {
   const navigate = useNavigate();

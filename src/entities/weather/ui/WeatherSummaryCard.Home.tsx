@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/shared/ui/shadcn/card";
 import { MapPin } from "lucide-react";
-import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
+import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIconMap";
 import type { WeatherSummaryDefaultData } from "@/entities/weather/model/types";
 import { TempMetricBlock } from "@/entities/weather/ui/TempMetricBlock";
 
