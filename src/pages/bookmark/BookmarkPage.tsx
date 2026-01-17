@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "@/shared/ui/components/BackButton";
-
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
 import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
@@ -56,7 +55,7 @@ export default function BookmarkPage() {
   };
 
   return (
-    <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
       <main className="w-full max-w-6xl px-4 py-6 mx-auto sm:px-6 sm:py-10">
         {/* 뒤로가기 */}
         <div className="mb-6 sm:mb-10">
@@ -104,13 +103,11 @@ export default function BookmarkPage() {
               ) : (
                 <WeatherSummaryCardBookmark
                   key={id}
-                  //
-
                   data={summaries[idx]!.data}
                   onClick={() =>
                     navigate(`/location/${encodeURIComponent(id)}`)
                   }
-                  onRemove={() => removeBookmark}
+                  onRemove={() => removeBookmark(id)}
                   alias={getAlias(id) || undefined}
                   onEditAlias={() => openEditAlias(id)}
                 />

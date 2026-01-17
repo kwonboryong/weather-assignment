@@ -63,9 +63,9 @@ export default function HomePage() {
   });
 
   return (
-    <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
-      <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto h-dvh">
-        <section className="grid flex-none min-h-0 gap-10 md:grid-cols-12">
+    <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
+      <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto min-h-dvh">
+        <section className="grid flex-none min-h-0 gap-4 sm:gap-6 md:grid-cols-12">
           {/* 검색바 + 즐겨찾기 */}
           <div className="flex justify-end md:col-span-12">
             <div className="flex w-full max-w-[540px] items-center gap-3">
@@ -105,8 +105,8 @@ export default function HomePage() {
           </div>
 
           {/* 인사 */}
-          <div className="mt-5 ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 md:text-6xl">
+          <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
+            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 md:text-5xl">
               <span className="block text-indigo-400/90">Hi,</span>
               <span className="block">Good</span>
               <span className="block">Morning</span>
@@ -114,7 +114,7 @@ export default function HomePage() {
           </div>
 
           {/* 날씨 요약 카드 */}
-          <div className="flex justify-end md:col-span-6">
+          <div className="h-full px-3 py-1 sm:px-6 md:col-span-6">
             <div className="w-full max-w-[720px]">
               {summaryViewState.type !== "ready" ? (
                 <ViewFallback state={summaryViewState} />
@@ -139,7 +139,8 @@ export default function HomePage() {
 
         {/* 시간대별 날씨 리스트 */}
         <section>
-          <div className="h-full px-6 py-1">
+          <div className="h-full px-3 py-1 sm:px-6">
+            {/* <div className="h-full py-1"> */}
             {hourlyViewState.type !== "ready" ? (
               <ViewFallback state={hourlyViewState} />
             ) : (

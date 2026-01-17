@@ -12,8 +12,16 @@ export function TempMetricBlock({ label, valueC, size = "default" }: Props) {
       className={`
         flex flex-col items-center justify-center 
         bg-indigo-500 text-white rounded-xl
-        ${isCompact ? "px-4 py-2 sm:min-w-[80px]" : "px-4 py-2.5 sm:px-6 sm:py-4 sm:min-w-[120px]"}
-        ${isCompact ? "max-sm:px-3 max-sm:py-1.5 max-sm:rounded-lg" : "max-sm:px-3 max-sm:py-2 max-sm:rounded-lg"}
+        ${
+          isCompact
+            ? "px-4 py-2 sm:min-w-[80px]"
+            : "px-4 py-2.5 sm:px-6 sm:py-4 sm:min-w-[110px]"
+        }
+        ${
+          isCompact
+            ? "max-sm:px-3 max-sm:py-1.5 max-sm:rounded-lg"
+            : "max-sm:px-3 max-sm:py-2 max-sm:rounded-lg"
+        }
       `}
     >
       <span
