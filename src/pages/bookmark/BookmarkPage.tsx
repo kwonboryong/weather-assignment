@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BackButton } from "@/shared/ui/components/BackButton";
+import { BackButton } from "@/shared/ui/BackButton";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
 import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
@@ -113,7 +113,7 @@ export default function BookmarkPage() {
                   alias={getAlias(id) || undefined}
                   onEditAlias={() => openEditAlias(id)}
                 />
-              )
+              ),
             )}
           </section>
         )}

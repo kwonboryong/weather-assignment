@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BackButton } from "@/shared/ui/components/BackButton";
-import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
+import { BackButton } from "@/shared/ui/BackButton";
+import { BookmarkButton } from "@/shared/ui/BookmarkButton";
 
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useForwardGeocode } from "@/features/search-location/model/useForwardGeocode";
@@ -101,7 +101,7 @@ export default function LocationDetailPage() {
                     minTemp: weatherQuery.data.main.temp_min,
                     maxTemp: weatherQuery.data.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      weatherQuery.data.weather?.[0].main
+                      weatherQuery.data.weather?.[0].main,
                     ),
                   }}
                 />

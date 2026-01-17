@@ -1,6 +1,6 @@
-import { SearchBar } from "@/shared/ui/components/SearchBar";
-import type { LocationItem } from "@/shared/ui/components/LocationDropdown";
-import { BookmarkButton } from "@/shared/ui/components/BookmarkButton";
+import { SearchBar } from "@/shared/ui/SearchBar";
+import type { LocationItem } from "@/shared/ui/LocationDropdown";
+import { BookmarkButton } from "@/shared/ui/BookmarkButton";
 
 import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useMemo, useState } from "react";
@@ -128,7 +128,7 @@ export default function HomePage() {
                     minTemp: weatherQuery.data!.main.temp_min,
                     maxTemp: weatherQuery.data!.main.temp_max,
                     weatherIcon: mapOpenWeatherIcon(
-                      weatherQuery.data!.weather?.[0]?.main
+                      weatherQuery.data!.weather?.[0]?.main,
                     ),
                   }}
                 />
