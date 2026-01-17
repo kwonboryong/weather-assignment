@@ -10,7 +10,7 @@ import {
   useHourlyWeatherByCoords,
 } from "@/entities/weather/model/useWeatherQuery";
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
-import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
+import { mapHourlyWeatherItems } from "@/shared/lib/mapHourlyWeatherItems";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import toast from "react-hot-toast";
 import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
@@ -46,7 +46,7 @@ export default function LocationDetailPage() {
 
   // 시간대별 날씨
   const hourlyQuery = useHourlyWeatherByCoords(coords);
-  const hourlyWeatherItems = toHourlyWeatherItems(hourlyQuery.data);
+  const hourlyWeatherItems = mapHourlyWeatherItems(hourlyQuery.data);
 
   // 장소명 변환
   const placeLabel = locationId ? locationId.replaceAll("-", " ") : "";

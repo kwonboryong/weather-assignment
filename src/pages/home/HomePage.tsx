@@ -13,7 +13,7 @@ import {
 import { mapOpenWeatherIcon } from "@/shared/lib/mapOpenWeatherIcon";
 import { getTodayLabel } from "@/shared/lib/getTodayLabel";
 import { ViewFallback } from "@/shared/ui/ViewFallback";
-import { toHourlyWeatherItems } from "@/shared/lib/toHourlyWeatherItems";
+import { mapHourlyWeatherItems } from "@/shared/lib/mapHourlyWeatherItems";
 import { getWeatherViewStates } from "./model/useWeatherViewStates";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCardHome";
@@ -50,7 +50,7 @@ export default function HomePage() {
   // 시간대별 날씨
   const hourlyQuery = useHourlyWeatherByCoords(coords);
 
-  const hourlyWeatherItems = toHourlyWeatherItems(hourlyQuery.data);
+  const hourlyWeatherItems = mapHourlyWeatherItems(hourlyQuery.data);
 
   // 로딩/에러 UI - 날씨 조회, 시간대별 날씨
   const geo = { coords, error: geoError };
