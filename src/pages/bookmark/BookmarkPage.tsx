@@ -63,9 +63,11 @@ export default function BookmarkPage() {
         </div>
 
         {/* 페이지 제목 */}
-        <h1 className="mb-6 text-3xl font-extrabold tracking-tight text-indigo-500 select-none sm:mb-10 sm:text-[40px]">
-          즐겨찾기
-        </h1>
+        <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
+          <h1 className="mb-6 font-extrabold tracking-tight text-indigo-500 select-none sm:mb-10 max-sm:text-3xl md:text-5xl">
+            즐겨찾기
+          </h1>
+        </div>
 
         {/* 즐겨찾기 카드 그리드 */}
         {isEmpty ? (
