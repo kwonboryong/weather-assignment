@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, CardContent } from "@/shared/ui/shadcn/card";
-import { MapPin, X } from "lucide-react";
+import { MapPin, Pencil, X } from "lucide-react";
 import type { WeatherSummaryCardProps } from "@/entities/weather/model/types";
 import { WEATHER_ICON_MAP } from "@/entities/weather/ui/weatherIcons";
 
@@ -19,6 +19,12 @@ export function WeatherSummaryCard(props: WeatherSummaryCardProps) {
 
   const handleCardClick = () => {
     if (variant === "favorite") props.onClick();
+  };
+
+  // 별칭 수정
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (variant === "favorite") props.onEditAlias?.();
   };
 
   return (
@@ -52,19 +58,42 @@ export function WeatherSummaryCard(props: WeatherSummaryCardProps) {
           {/* 왼쪽 영역 */}
           <div className={`flex flex-col ${isFavorite ? "gap-12" : "gap-2"}`}>
             {/* 위치 */}
-            <div
-              className={`inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full ${
-                isFavorite ? "max-w-[180px]" : "w-fit"
-              }`}
-            >
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span
-                className={`text-xs font-medium ${
-                  isFavorite ? "truncate min-w-0" : ""
-                }`}
-              >
-                {location}
-              </span>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <div
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full ${
+                    isFavorite ? "max-w-[180px]" : "w-fit"
+                  }`}
+                >
+                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span
+                    className={`text-xs font-medium ${
+                      isFavorite ? "truncate min-w-0" : ""
+                    }`}
+                  >
+                    {isFavorite ? (props.alias ?? location) : location}
+                  </span>
+                </div>
+
+                {/* 별칭이 있으면 -> 원래 위치명 추가 */}
+                {isFavorite && props.alias ? (
+                  <p className="mt-2 text-[11px] text-slate-500 truncate max-w-[180px]">
+                    {location}
+                  </p>
+                ) : null}
+              </div>
+
+              {/* 별칭 수정 */}
+              {isFavorite ? (
+                <button
+                  type="button"
+                  aria-label="별칭 수정"
+                  onClick={handleEditClick}
+                  className="flex items-center justify-center w-6 h-6 transition-colors rounded-full bg-gray-900/10 hover:bg-gray-900/20"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-gray-700" />
+                </button>
+              ) : null}
             </div>
 
             {/* 날짜 */}
