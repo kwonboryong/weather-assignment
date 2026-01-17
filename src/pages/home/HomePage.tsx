@@ -1,29 +1,34 @@
-import { SearchBar } from "@/shared/ui/SearchBar";
-import type { LocationItem } from "@/shared/ui/LocationDropdown";
-import { BookmarkButton } from "@/shared/ui/BookmarkButton";
-import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
+
+import { SearchBar, BookmarkButton, ViewFallback } from "@/shared/ui";
+import type { LocationItem } from "@/shared/ui";
+
+import {
+  HourlyWeatherSection,
+  WeatherSummaryCardHome,
+} from "@/entities/weather/ui";
 import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
-} from "@/entities/weather/model/useWeatherQueries";
-import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
-import { getTodayLabel } from "@/shared/lib/getTodayLabel";
-import { ViewFallback } from "@/shared/ui/ViewFallback";
-import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
+} from "@/entities/weather/model";
+
+import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
-import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCard.Home";
-import { getViewState } from "@/shared/lib/getViewState";
+
+import {
+  getTodayLabel,
+  getViewState,
+  mapOpenWeatherIcon,
+  mapHourlyWeatherItems,
+} from "@/shared/lib";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
-  // 오늘 날짜
   const { dayOfWeek, date } = getTodayLabel();
 
-  // 드롭다운
+  // 검색 드롭다운
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -48,10 +53,9 @@ export default function HomePage() {
 
   // 시간대별 날씨
   const hourlyQuery = useHourlyWeatherByCoords(coords);
-
   const hourlyWeatherItems = mapHourlyWeatherItems(hourlyQuery.data);
 
-  // 로딩/에러 UI - 날씨 조회, 시간대별 날씨
+  // Fallback UI - 날씨 조회, 시간대별 날씨
   const geo = { coords, error: geoError };
 
   const summaryViewState = getViewState({

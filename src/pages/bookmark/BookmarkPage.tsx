@@ -1,25 +1,23 @@
-import { useNavigate } from "react-router-dom";
-import { BackButton } from "@/shared/ui/BackButton";
-import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
-import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
-import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { BackButton } from "@/shared/ui";
+import { WeatherSummaryCardBookmark } from "@/entities/weather/ui";
 import { EditAliasDialog } from "@/features/bookmark-location/ui/EditAliasDialog";
-import { WeatherSummaryCardBookmark } from "@/entities/weather/ui/WeatherSummaryCard.Bookmark";
+
+import {
+  useBookmarks,
+  useBookmarkSummaries,
+  useAliases,
+} from "@/features/bookmark-location/model";
 
 export default function BookmarkPage() {
   const navigate = useNavigate();
 
-  const { ids, remove } = useBookmarks();
-
-  // 중복 제거 + 최대 6개
-  const visibleIds = Array.from(new Set(ids)).slice(0, 6);
-
   // 북마크 데이터
+  const { ids, remove } = useBookmarks();
+  const visibleIds = Array.from(new Set(ids)).slice(0, 6);
   const summaries = useBookmarkSummaries(visibleIds);
-
-  // 예외 처리
-  const isEmpty = visibleIds.length === 0;
 
   // 별칭
   const { getAlias, setAlias, removeAlias } = useAliases();
@@ -28,19 +26,16 @@ export default function BookmarkPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [aliasInput, setAliasInput] = useState("");
 
-  // 다이얼로그 열기
   const openEditAlias = (id: string) => {
     setEditingId(id);
     setAliasInput(getAlias(id));
   };
 
-  // 다이얼로그 닫기
   const closeEditAlias = () => {
     setEditingId(null);
     setAliasInput("");
   };
 
-  // 별칭 저장
   const saveAlias = () => {
     if (!editingId) return;
 
@@ -48,11 +43,13 @@ export default function BookmarkPage() {
     closeEditAlias();
   };
 
-  // 북마크 삭제
   const removeBookmark = (id: string) => {
     remove(id);
     removeAlias(id);
   };
+
+  // 예외 처리
+  const isEmpty = visibleIds.length === 0;
 
   return (
     <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">

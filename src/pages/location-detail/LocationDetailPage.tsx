@@ -1,25 +1,29 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { BackButton } from "@/shared/ui/BackButton";
-import { BookmarkButton } from "@/shared/ui/BookmarkButton";
+import toast from "react-hot-toast";
 
-import { HourlyWeatherSection } from "@/entities/weather/ui/HourlyWeatherSection";
-import { useForwardGeocode } from "@/entities/location/model/useForwardGeocodeQuery";
-import { getTodayLabel } from "@/shared/lib/getTodayLabel";
+import { BackButton, BookmarkButton } from "@/shared/ui";
+import {
+  getTodayLabel,
+  mapOpenWeatherIcon,
+  mapHourlyWeatherItems,
+} from "@/shared/lib";
+
+import {
+  HourlyWeatherSection,
+  WeatherSummaryCardHome,
+} from "@/entities/weather/ui";
 import {
   useCurrentWeatherByCoords,
   useHourlyWeatherByCoords,
-} from "@/entities/weather/model/useWeatherQueries";
-import { mapOpenWeatherIcon } from "@/shared/lib/mappers/mapOpenWeatherIcon";
-import { mapHourlyWeatherItems } from "@/shared/lib/mappers/mapHourlyWeatherItems";
+} from "@/entities/weather/model";
+
+import { useForwardGeocode } from "@/entities/location/model/useForwardGeocodeQuery";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
-import toast from "react-hot-toast";
-import { WeatherSummaryCardHome } from "@/entities/weather/ui/WeatherSummaryCard.Home";
 
 export default function LocationDetailPage() {
   const navigate = useNavigate();
   const { locationId } = useParams<{ locationId: string }>();
 
-  // 오늘 날짜
   const { dayOfWeek, date } = getTodayLabel();
 
   // 북마크
@@ -53,7 +57,7 @@ export default function LocationDetailPage() {
   const [region, ...rest] = (placeLabel || "장소 정보").split(" ");
   const detail = rest.join(" ");
 
-  // 예외처리
+  // 예외 처리
   const isCoordsPending = coordsQuery.isPending;
   const isNoPlaceInfo = coordsQuery.isSuccess && coords === null;
 
