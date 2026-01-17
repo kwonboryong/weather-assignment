@@ -37,6 +37,8 @@ export interface FavoriteVariantProps {
   data: WeatherSummaryBaseData;
   onClick: () => void;
   onRemove: () => void;
+  alias?: string;
+  onEditAlias?: () => void;
 }
 
 export type WeatherSummaryCardProps =
