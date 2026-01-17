@@ -3,9 +3,13 @@ import { BackButton } from "@/shared/ui/components/BackButton";
 import { WeatherSummaryCard } from "@/entities/weather/ui/WeatherSummaryCard";
 import { useBookmarks } from "@/features/bookmark-location/model/useBookmarks";
 import { useBookmarkSummaries } from "@/features/bookmark-location/model/useBookmarkSummaries";
+import { useAliases } from "@/features/bookmark-location/model/useBookmarkAliases";
+import { useState } from "react";
+import { EditAliasDialog } from "@/features/bookmark-location/ui/EditAliasDialog";
 
 export default function BookmarkPage() {
   const navigate = useNavigate();
+
   const { ids, remove } = useBookmarks();
 
   // 중복 제거 + 최대 6개
@@ -16,6 +20,39 @@ export default function BookmarkPage() {
 
   // 예외 처리
   const isEmpty = visibleIds.length === 0;
+
+  // 별칭
+  const { getAlias, setAlias, removeAlias } = useAliases();
+
+  // 별칭 다이얼로그
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [aliasInput, setAliasInput] = useState("");
+
+  // 다이얼로그 열기
+  const openEditAlias = (id: string) => {
+    setEditingId(id);
+    setAliasInput(getAlias(id));
+  };
+
+  // 다이얼로그 닫기
+  const closeEditAlias = () => {
+    setEditingId(null);
+    setAliasInput("");
+  };
+
+  // 별칭 저장
+  const saveAlias = () => {
+    if (!editingId) return;
+
+    setAlias(editingId, aliasInput);
+    closeEditAlias();
+  };
+
+  // 북마크 삭제
+  const removeBookmark = (id: string) => {
+    remove(id);
+    removeAlias(id);
+  };
 
   return (
     <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -71,13 +108,23 @@ export default function BookmarkPage() {
                   onClick={() =>
                     navigate(`/location/${encodeURIComponent(id)}`)
                   }
-                  onRemove={() => remove(id)}
+                  onRemove={() => removeBookmark}
+                  alias={getAlias(id) || undefined}
+                  onEditAlias={() => openEditAlias(id)}
                 />
               )
             )}
           </section>
         )}
       </main>
+
+      <EditAliasDialog
+        open={Boolean(editingId)}
+        value={aliasInput}
+        onChange={setAliasInput}
+        onClose={closeEditAlias}
+        onSave={saveAlias}
+      />
     </div>
   );
 }
