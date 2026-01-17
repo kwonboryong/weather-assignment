@@ -58,10 +58,10 @@ export default function LocationDetailPage() {
   const isNoPlaceInfo = coordsQuery.isSuccess && coords === null;
 
   return (
-    <div className="overflow-hidden h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
-      <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto h-dvh">
-        <section className="grid flex-none min-h-0 gap-10 md:grid-cols-12">
-          {/* 뒤로가기 + 북마크 */}
+    <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
+      <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto min-h-dvh">
+        <section className="grid flex-none min-h-0 gap-4 sm:gap-6 md:grid-cols-12">
+          {/* 뒤로가기 + 북마크 (HomePage 상단 영역과 동일한 느낌) */}
           <div className="flex items-center justify-between md:col-span-12">
             <BackButton onClick={() => navigate(-1)} ariaLabel={"뒤로가기"} />
             <BookmarkButton
@@ -72,16 +72,16 @@ export default function LocationDetailPage() {
             />
           </div>
 
-          {/* 장소명 */}
-          <div className="mt-5 ml-7 md:col-span-6">
-            <h1 className="text-4xl font-extrabold leading-tight select-none text-slate-900 md:text-6xl">
-              <span className="block mb-5 text-indigo-500">{region}</span>
+          {/* 장소명 (HomePage 인사 영역과 동일한 위치/폭) */}
+          <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
+            <h1 className="text-4xl font-extrabold leading-tight select-none text-slate-900 max-sm:text-3xl md:text-5xl">
+              <span className="block mb-3 text-indigo-500">{region}</span>
               {detail ? <span className="block">{detail}</span> : null}
             </h1>
           </div>
 
-          {/* 날씨 요약 카드 */}
-          <div className="flex justify-end md:col-span-6">
+          {/* 날씨 요약 카드 (HomePage 카드 영역과 동일한 패딩/폭 규칙) */}
+          <div className="h-full px-3 py-1 sm:px-6 md:col-span-6">
             <div className="w-full max-w-[720px]">
               {isCoordsPending ? (
                 <StateBox text="장소 정보를 불러오는 중..." />
@@ -110,10 +110,10 @@ export default function LocationDetailPage() {
           </div>
         </section>
 
-        {/* 시간대별 날씨 리스트 */}
+        {/* 시간대별 날씨 리스트 (HomePage와 동일한 래퍼 패딩 규칙) */}
         {isCoordsPending || isNoPlaceInfo ? null : (
           <section>
-            <div className="h-full px-6 py-1">
+            <div className="h-full px-3 py-1 sm:px-6">
               {hourlyQuery.isPending ? (
                 <StateBox text="시간대별 날씨 불러오는 중..." />
               ) : hourlyQuery.isError || !hourlyQuery.data ? (

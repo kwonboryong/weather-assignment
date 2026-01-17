@@ -106,7 +106,7 @@ export default function HomePage() {
 
           {/* 인사 */}
           <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 md:text-5xl">
+            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 max-sm:text-3xl md:text-5xl">
               <span className="block text-indigo-400/90">Hi,</span>
               <span className="block">Good</span>
               <span className="block">Morning</span>
