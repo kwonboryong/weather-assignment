@@ -10,7 +10,7 @@ export function HourlyWeatherCard({
 
   return (
     <article
-      className="w-20 px-2 py-5 text-white bg-indigo-500 h-36 rounded-2xl sm:w-24 sm:h-44 sm:px-3 sm:py-8 md:w-28 md:h-48"
+      className="w-20 px-2 py-5 text-white bg-indigo-500 select-none h-36 rounded-2xl sm:w-24 sm:h-44 sm:px-3 sm:py-8 md:w-28 md:h-48"
       aria-label={`${hour} 기온 ${temp}`}
     >
       <header className="text-center">

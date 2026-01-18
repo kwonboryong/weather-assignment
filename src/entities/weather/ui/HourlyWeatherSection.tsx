@@ -15,11 +15,8 @@ export function HourlyWeatherSection({ items }: Props) {
         ${CARD_SURFACE}
       `}
     >
-      <header className="flex items-center justify-between">
-        <h2
-          id="forecast-title"
-          className="text-lg font-semibold text-indigo-500"
-        >
+      <header className="flex items-center justify-between cursor-default caret-transparent">
+        <h2 id="forecast-title" className="font-bold md:text-xl">
           시간대 별 기온
         </h2>
       </header>

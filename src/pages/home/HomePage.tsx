@@ -139,7 +139,7 @@ export default function HomePage() {
             aria-hidden="true"
           >
             <p className="flex flex-col text-4xl font-bold leading-tight select-none md:gap-2 text-slate-900 max-sm:text-3xl md:text-5xl">
-              <span className="block text-indigo-400/90">Hi,</span>
+              <span className="block text-indigo-500/90">Hi,</span>
               <span className="block">{greeting.prefix}</span>
               <span className="block">{greeting.word}</span>
             </p>

@@ -74,7 +74,7 @@ export function WeatherSummaryCardBookmark({
             <div className="h-[72px] max-sm:h-[64px]">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                 <div className="min-w-0">
-                  <div className="inline-flex items-center min-w-0 max-w-full overflow-hidden gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full">
+                  <div className="inline-flex items-center min-w-0 max-w-full overflow-hidden select-none gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full">
                     <MapPin
                       className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 flex-shrink-0"
                       aria-hidden="true"
