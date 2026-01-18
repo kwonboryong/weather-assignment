@@ -68,7 +68,10 @@ export function LocationDropdown({
                     key={item.id}
                     value={item.title}
                     onMouseDown={(e) => e.preventDefault()}
-                    onSelect={() => onSelect(item)}
+                    onSelect={() => {
+                      onSelect(item);
+                      onClose();
+                    }}
                     className="cursor-pointer"
                   >
                     <div className="flex flex-col">
