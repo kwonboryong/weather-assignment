@@ -90,17 +90,7 @@ export default function HomePage() {
           {/* 검색바 + 즐겨찾기 */}
           <div className="flex justify-end md:col-span-12">
             <div className="flex w-full max-w-[540px] items-center gap-3">
-              <form
-                role="search"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (items[0]) {
-                    navigate(`/location/${items[0].id}`);
-                    setOpen(false);
-                  }
-                }}
-                className="relative flex-1"
-              >
+              <div role="search" className="relative flex-1">
                 <SearchBar
                   value={query}
                   items={items}
@@ -115,7 +105,7 @@ export default function HomePage() {
                   }}
                   onClose={() => setOpen(false)}
                 />
-              </form>
+              </div>
 
               <BookmarkButton
                 active
