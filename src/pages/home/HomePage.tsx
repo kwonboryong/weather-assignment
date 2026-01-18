@@ -27,6 +27,9 @@ export default function HomePage() {
 
   const { dayOfWeek, date } = getTodayLabel();
 
+  // 검색 더보기용 limit
+  const [limit, setLimit] = useState(20);
+
   // 검색 드롭다운
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -34,7 +37,7 @@ export default function HomePage() {
   const [debouncedQuery] = useDebounce(query, 200);
 
   // 검색 훅(입력값 → 매칭 결과)
-  const { results } = usePlaceSearch(debouncedQuery);
+  const { results, hasMore } = usePlaceSearch(debouncedQuery, limit);
 
   // SearchBar가 받는 LocationItem[] 형태로 매핑
   const items: LocationItem[] = useMemo(() => {
@@ -98,12 +101,15 @@ export default function HomePage() {
                   onChange={(v) => {
                     setQuery(v);
                     setOpen(Boolean(v.trim()));
+                    setLimit((prev) => (prev === 20 ? prev : 20));
                   }}
                   onSelect={(item) => {
                     navigate(`/location/${item.id}`);
                     setOpen(false);
                   }}
                   onClose={() => setOpen(false)}
+                  hasMore={hasMore}
+                  onLoadMore={() => setLimit((prev) => prev + 20)}
                 />
               </div>
 
