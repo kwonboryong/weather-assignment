@@ -9,7 +9,7 @@ import {
   WeatherSummaryCardHome,
 } from "@/entities/weather/ui";
 
-import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
+import { useCurrentCoords } from "@/features/detect-location/model/useCurrentCoordsQuery";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 import { useWeatherByCoords } from "@/features/weather-by-coords/model/useWeatherByCoords";
 
@@ -18,6 +18,7 @@ import {
   getViewState,
   mapOpenWeatherIcon,
   mapHourlyWeatherItems,
+  mapGeolocationError,
 } from "@/shared/lib";
 
 export default function HomePage() {
@@ -42,7 +43,13 @@ export default function HomePage() {
   }, [results]);
 
   // 현재 위치 좌표
-  const { coords, error: geoError } = useDetectLocation();
+  const coordsQuery = useCurrentCoords();
+  const coords = coordsQuery.data ?? null;
+
+  // 좌표 에러
+  const geoError = coordsQuery.isError
+    ? mapGeolocationError(coordsQuery.error.message)
+    : null;
 
   // 위치 기반 날씨 조회
   const {
@@ -56,7 +63,10 @@ export default function HomePage() {
   const hourlyWeatherItems = mapHourlyWeatherItems(hourlyWeatherQuery?.data);
 
   // Fallback UI - 날씨 조회, 시간대별 날씨
-  const geo = { coords, error: geoError };
+  const geo = {
+    coords: coordsQuery.isLoading ? null : coords,
+    error: geoError,
+  };
 
   const summaryViewState = getViewState({
     geo,

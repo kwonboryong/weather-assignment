@@ -3,3 +3,4 @@ export { getViewState } from "./getViewState";
 
 export { mapOpenWeatherIcon } from "./mappers/mapOpenWeatherIcon";
 export { mapHourlyWeatherItems } from "./mappers/mapHourlyWeatherItems";
+export { mapGeolocationError } from "./mappers/mapGeolocationError";
