@@ -9,7 +9,7 @@ import { geocodeKeys } from "@/shared/lib/query/query-keys";
 
 export function useReverseGeocode(coords: Coords | null) {
   return useQuery({
-    queryKey: geocodeKeys.reverse(coords as Coords),
+    queryKey: geocodeKeys.reverseFor(coords),
     queryFn: () => {
       if (!coords) throw new Error("location coords가 없습니다.");
 

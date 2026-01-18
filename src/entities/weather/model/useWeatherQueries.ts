@@ -9,7 +9,7 @@ import { weatherKeys } from "@/shared/lib/query/query-keys";
 
 export function useCurrentWeather(coords: Coords | null) {
   return useQuery({
-    queryKey: weatherKeys.current(coords as Coords),
+    queryKey: weatherKeys.currentFor(coords),
     queryFn: () => {
       if (!coords) throw new Error("current-weather coords가 없습니다.");
 
@@ -23,7 +23,7 @@ export function useCurrentWeather(coords: Coords | null) {
 
 export function useHourlyWeather(coords: Coords | null) {
   return useQuery({
-    queryKey: weatherKeys.hourly(coords as Coords),
+    queryKey: weatherKeys.hourlyFor(coords),
     queryFn: () => {
       if (!coords) throw new Error("hourly-weather coords가 없습니다.");
 
