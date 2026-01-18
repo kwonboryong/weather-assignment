@@ -21,11 +21,13 @@ import {
   mapHourlyWeatherItems,
   mapGeolocationError,
 } from "@/shared/lib";
+import { getGreeting } from "@/shared/lib/getGreeting";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   const { dayOfWeek, date } = getTodayLabel();
+  const greeting = getGreeting();
 
   // 검색 더보기용 limit
   const [limit, setLimit] = useState(20);
@@ -123,10 +125,10 @@ export default function HomePage() {
 
           {/* 인사 */}
           <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 max-sm:text-3xl md:text-5xl">
+            <h1 className="flex flex-col text-4xl font-bold leading-tight select-none md:gap-2 text-slate-900 max-sm:text-3xl md:text-5xl">
               <span className="block text-indigo-400/90">Hi,</span>
-              <span className="block">Good</span>
-              <span className="block">Morning</span>
+              <span className="block">{greeting.prefix}</span>
+              <span className="block">{greeting.word}</span>
             </h1>
           </div>
 
