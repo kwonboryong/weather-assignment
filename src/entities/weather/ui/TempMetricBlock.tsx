@@ -9,9 +9,10 @@ export function TempMetricBlock({ label, valueC, size = "default" }: Props) {
 
   return (
     <div
-      className={`
-        flex flex-col items-center justify-center 
-        bg-indigo-500 text-white rounded-xl
+      role="group"
+      aria-label={`${label} ${Math.round(valueC)}도`}
+      className={`flex flex-col items-center justify-center 
+        bg-indigo-500 text-white rounded-xl select-none
         ${
           isCompact
             ? "px-4 py-2 sm:min-w-[80px]"

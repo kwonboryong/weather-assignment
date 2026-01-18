@@ -29,7 +29,7 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
 
   return (
     <Card
-      className={`w-full max-w-[500px] transition-all duration-200 relative 
+      className={`w-full max-w-[500px] transition-all duration-200 relative
         ${CARD_SURFACE}
         ${className}
       `}
@@ -43,10 +43,11 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
           <div className="flex flex-col min-w-0 gap-4 sm:gap-2 sm:justify-between">
             {/* 위치 + 날짜 */}
             <div>
-              <div className="inline-flex items-center min-w-0 max-w-full overflow-hidden gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full">
+              <div className="inline-flex items-center min-w-0 max-w-full overflow-hidden gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full select-none">
                 <MapPin
                   className="w-3.5 h-3.5 flex-shrink-0 
                 max-sm:w-3 max-sm:h-3"
+                  aria-hidden="true"
                 />
                 <span className="min-w-0 text-xs font-medium truncate">
                   {location}
@@ -54,7 +55,7 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
               </div>
 
               {/* 날짜 */}
-              <div className="mt-3 max-sm:hidden">
+              <div className="mt-3 select-none max-sm:hidden">
                 <h2 className="text-xl font-bold text-gray-900">{dayOfWeek}</h2>
                 <p className="mt-1 text-sm text-gray-600">{date}</p>
               </div>
@@ -62,14 +63,15 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
 
             {/* 기온 + 날씨 아이콘 */}
             <div className="flex items-center gap-3 max-sm:gap-2 max-sm:justify-center">
-              <span className="text-5xl font-bold text-gray-900 max-sm:text-3xl md:text-4xl">
+              <span className="text-5xl font-bold text-gray-900 select-none max-sm:text-3xl md:text-4xl">
+                <span className="sr-only">현재 기온 </span>
                 {Math.round(currentTemp)}°C
               </span>
 
               {weatherIcon ? (
                 <span
                   className="text-6xl leading-none select-none md:text-5xl max-sm:text-4xl"
-                  aria-hidden
+                  aria-hidden="true"
                 >
                   {WEATHER_ICON_MAP[weatherIcon]}
                 </span>
