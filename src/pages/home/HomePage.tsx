@@ -91,11 +91,20 @@ export default function HomePage() {
   return (
     <div className="overflow-x-hidden min-h-dvh bg-gradient-to-br from-indigo-50 to-purple-50">
       <main className="flex flex-col w-full max-w-6xl px-4 py-8 mx-auto min-h-dvh">
-        <section className="grid flex-none min-h-0 gap-4 sm:gap-6 md:grid-cols-12">
+        <h1 className="sr-only">날씨 앱 홈</h1>
+
+        <section
+          className="grid flex-none min-h-0 gap-4 sm:gap-6 md:grid-cols-12"
+          aria-label="검색 및 날씨 정보"
+        >
           {/* 검색바 + 즐겨찾기 */}
           <div className="flex justify-end md:col-span-12">
             <div className="flex w-full max-w-[540px] items-center gap-3">
-              <div role="search" className="relative flex-1">
+              <div
+                role="search"
+                aria-label="지역 검색"
+                className="relative flex-1"
+              >
                 <SearchBar
                   value={query}
                   items={items}
@@ -117,6 +126,7 @@ export default function HomePage() {
 
               <BookmarkButton
                 active
+                mode="link"
                 ariaLabel="즐겨찾기 페이지로 이동"
                 onClick={() => navigate("/bookmark")}
               />
@@ -124,12 +134,15 @@ export default function HomePage() {
           </div>
 
           {/* 인사 */}
-          <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
-            <h1 className="flex flex-col text-4xl font-bold leading-tight select-none md:gap-2 text-slate-900 max-sm:text-3xl md:text-5xl">
+          <div
+            className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6"
+            aria-hidden="true"
+          >
+            <p className="flex flex-col text-4xl font-bold leading-tight select-none md:gap-2 text-slate-900 max-sm:text-3xl md:text-5xl">
               <span className="block text-indigo-400/90">Hi,</span>
               <span className="block">{greeting.prefix}</span>
               <span className="block">{greeting.word}</span>
-            </h1>
+            </p>
           </div>
 
           {/* 날씨 요약 카드 */}
@@ -157,7 +170,7 @@ export default function HomePage() {
         </section>
 
         {/* 시간대별 날씨 리스트 */}
-        <section>
+        <section aria-label="시간대별 날씨">
           <div className="h-full px-3 py-1 sm:px-6">
             {hourlyViewState.type !== "ready" ? (
               <ViewFallback state={hourlyViewState} />

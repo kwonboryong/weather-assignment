@@ -95,9 +95,10 @@ export default function LocationDetailPage() {
         <section className="grid flex-none min-h-0 gap-4 sm:gap-6 md:grid-cols-12">
           {/* 뒤로가기 + 북마크 */}
           <div className="flex items-center justify-between md:col-span-12">
-            <BackButton onClick={() => navigate(-1)} ariaLabel={"뒤로가기"} />
+            <BackButton onClick={() => navigate(-1)} ariaLabel={"뒤로 가기"} />
             <BookmarkButton
               active={bookmarked}
+              mode="toggle"
               ariaLabel={bookmarked ? "즐겨찾기 해제" : "즐겨찾기 추가"}
               disabled={!placeId}
               onClick={handleToggleBookmark}
@@ -138,7 +139,7 @@ export default function LocationDetailPage() {
 
         {/* 시간대별 날씨 리스트 */}
         {isNoPlaceInfo ? null : (
-          <section>
+          <section aria-label="시간대별 날씨">
             <div className="h-full px-3 py-1 sm:px-6">
               {hourlyViewState.type !== "ready" ? (
                 <ViewFallback state={hourlyViewState} />
