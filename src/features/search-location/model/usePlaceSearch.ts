@@ -19,9 +19,7 @@ export function usePlaceSearch(query: string, limit = 20) {
 
     if (!q) return { results: [], total: 0 };
 
-    const matched = allPlaces.filter((item) => {
-      return item.full.includes(q) || item.parts.some((p) => p.includes(q));
-    });
+    const matched = allPlaces.filter((item) => item.label.includes(q));
 
     return {
       results: matched.slice(0, limit),
