@@ -5,12 +5,13 @@ import {
 } from "@/entities/weather/model/weatherApi";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 import { TIME } from "@/shared/lib/query/time";
+import { weatherKeys } from "@/shared/lib/query/query-keys/weatherKeys";
 
 export function useCurrentWeather(coords: Coords | null) {
   return useQuery({
-    queryKey: ["current-weather", coords?.lat, coords?.lon],
+    queryKey: weatherKeys.current(coords as Coords),
     queryFn: () => {
-      if (!coords) throw new Error("weather coords가 없습니다.");
+      if (!coords) throw new Error("current-weather coords가 없습니다.");
 
       return getCurrentWeather(coords);
     },
@@ -22,9 +23,9 @@ export function useCurrentWeather(coords: Coords | null) {
 
 export function useHourlyWeather(coords: Coords | null) {
   return useQuery({
-    queryKey: ["hourly-weather", coords?.lat, coords?.lon],
+    queryKey: weatherKeys.hourly(coords as Coords),
     queryFn: () => {
-      if (!coords) throw new Error("hourly coords가 없습니다.");
+      if (!coords) throw new Error("hourly-weather coords가 없습니다.");
 
       return getHourlyWeather(coords);
     },

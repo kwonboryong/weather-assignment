@@ -5,10 +5,11 @@ import {
 } from "@/entities/location/model/geocodingApi";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 import { TIME } from "@/shared/lib/query/time";
+import { geocodeKeys } from "@/shared/lib/query/query-keys/geocodeKeys";
 
 export function useReverseGeocode(coords: Coords | null) {
   return useQuery({
-    queryKey: ["reverse-geocode", coords?.lat, coords?.lon],
+    queryKey: geocodeKeys.reverse(coords as Coords),
     queryFn: () => {
       if (!coords) throw new Error("location coords가 없습니다.");
 
@@ -22,7 +23,7 @@ export function useReverseGeocode(coords: Coords | null) {
 
 export function useForwardGeocode(placeFull: string | undefined) {
   return useQuery({
-    queryKey: ["forward-geocode", placeFull],
+    queryKey: geocodeKeys.forward(placeFull ?? ""),
     queryFn: () => {
       if (!placeFull) throw new Error("placeFull이 없습니다.");
 
