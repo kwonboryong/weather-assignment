@@ -25,6 +25,8 @@ type Props = {
   onChange: (v: string) => void;
   onClose: () => void;
   onSelect: (item: LocationItem) => void;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
   isLoading?: boolean;
   emptyText?: string;
 };
@@ -36,6 +38,8 @@ export function LocationDropdown({
   onChange,
   onClose,
   onSelect,
+  hasMore,
+  onLoadMore,
   isLoading,
   emptyText = "검색 결과가 없습니다",
 }: Props) {
@@ -88,6 +92,19 @@ export function LocationDropdown({
                   </CommandItem>
                 ))}
               </CommandGroup>
+            ) : null}
+
+            {hasMore ? (
+              <div className="p-2 border-t">
+                <button
+                  type="button"
+                  className="w-full h-8 text-sm rounded-md hover:bg-slate-50"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={onLoadMore}
+                >
+                  더보기
+                </button>
+              </div>
             ) : null}
           </CommandList>
         </PopoverContent>

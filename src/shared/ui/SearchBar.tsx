@@ -12,6 +12,8 @@ type Props = {
   onClose: () => void;
   isLoading?: boolean;
   emptyText?: string;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 export function SearchBar({
@@ -21,6 +23,8 @@ export function SearchBar({
   onChange,
   onSelect,
   onClose,
+  hasMore,
+  onLoadMore,
   isLoading,
   emptyText,
 }: Props) {
@@ -32,6 +36,8 @@ export function SearchBar({
       onChange={onChange}
       onSelect={onSelect}
       onClose={onClose}
+      hasMore={hasMore}
+      onLoadMore={onLoadMore}
       isLoading={isLoading}
       emptyText={emptyText}
     />
