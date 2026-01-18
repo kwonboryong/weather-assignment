@@ -47,6 +47,7 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
                 <MapPin
                   className="w-3.5 h-3.5 flex-shrink-0 
                 max-sm:w-3 max-sm:h-3"
+                  aria-hidden="true"
                 />
                 <span className="min-w-0 text-xs font-medium truncate">
                   {location}
@@ -63,13 +64,14 @@ export function WeatherSummaryCardHome({ className = "", data }: Props) {
             {/* 기온 + 날씨 아이콘 */}
             <div className="flex items-center gap-3 max-sm:gap-2 max-sm:justify-center">
               <span className="text-5xl font-bold text-gray-900 max-sm:text-3xl md:text-4xl">
+                <span className="sr-only">현재 기온 </span>
                 {Math.round(currentTemp)}°C
               </span>
 
               {weatherIcon ? (
                 <span
                   className="text-6xl leading-none select-none md:text-5xl max-sm:text-4xl"
-                  aria-hidden
+                  aria-hidden="true"
                 >
                   {WEATHER_ICON_MAP[weatherIcon]}
                 </span>

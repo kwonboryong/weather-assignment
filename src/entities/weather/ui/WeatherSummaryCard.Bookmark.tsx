@@ -37,14 +37,24 @@ export function WeatherSummaryCardBookmark({
 
   return (
     <Card
+      role="button"
+      tabIndex={0}
+      aria-label={`${alias ?? location} 상세 페이지로 이동`}
       className={`
       w-full sm:max-w-[320px]
       transition-all duration-200 relative
       cursor-pointer hover:shadow-lg hover:scale-[1.0]
+       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white
       ${CARD_SURFACE}
       ${className}
     `}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
     >
       {/* 즐겨찾기 삭제 */}
       <button
@@ -53,7 +63,7 @@ export function WeatherSummaryCardBookmark({
         className="absolute z-10 flex items-center justify-center w-6 h-6 text-white transition-colors duration-200 rounded-full top-3 right-3 bg-gray-900/60 hover:bg-red-500"
         aria-label="즐겨찾기 삭제"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
 
       <CardContent className="p-5 max-sm:p-4 h-[180px] max-sm:h-[160px]">
@@ -65,7 +75,10 @@ export function WeatherSummaryCardBookmark({
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
                 <div className="min-w-0">
                   <div className="inline-flex items-center min-w-0 max-w-full overflow-hidden gap-2 px-3 py-1.5 bg-indigo-500 text-white rounded-full">
-                    <MapPin className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 flex-shrink-0" />
+                    <MapPin
+                      className="w-3.5 h-3.5 max-sm:w-3 max-sm:h-3 flex-shrink-0"
+                      aria-hidden="true"
+                    />
                     <span className="min-w-0 text-xs font-medium truncate">
                       {alias ?? location}
                     </span>
@@ -86,7 +99,10 @@ export function WeatherSummaryCardBookmark({
                   onClick={handleEditClick}
                   className="flex items-center justify-center flex-shrink-0 w-6 h-6 transition-colors rounded-full bg-gray-900/10 hover:bg-gray-900/20"
                 >
-                  <Pencil className="w-3.5 h-3.5 text-gray-700" />
+                  <Pencil
+                    className="w-3.5 h-3.5 text-gray-700"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </div>
@@ -94,13 +110,14 @@ export function WeatherSummaryCardBookmark({
             {/* 기온 + 날씨 아이콘 */}
             <div className="flex items-center gap-3 max-sm:gap-2 max-sm:mt-4">
               <span className="text-4xl font-bold text-gray-900 max-sm:text-3xl">
+                <span className="sr-only">현재 기온 </span>
                 {Math.round(currentTemp)}°C
               </span>
 
               {weatherIcon ? (
                 <span
                   className="text-5xl leading-none select-none max-sm:text-4xl"
-                  aria-hidden
+                  aria-hidden="true"
                 >
                   {WEATHER_ICON_MAP[weatherIcon]}
                 </span>

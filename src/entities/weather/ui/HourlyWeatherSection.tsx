@@ -25,10 +25,14 @@ export function HourlyWeatherSection({ items }: Props) {
       </header>
 
       <nav
-        aria-label="Forecast list"
+        aria-label="시간대별 기온 목록"
+        tabIndex={0}
         className="mt-5 pb-3 overflow-x-auto [-webkit-overflow-scrolling:touch]"
       >
-        <ul className="flex gap-5 pr-2 min-w-max">
+        <ul
+          aria-label="시간대별 기온 카드 목록"
+          className="flex gap-5 pr-2 min-w-max"
+        >
           {items.map((item, i) => (
             <li key={`${item.hour}-${i}`} className="shrink-0">
               <HourlyWeatherCard
