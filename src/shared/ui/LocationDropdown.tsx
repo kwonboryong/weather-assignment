@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/shared/ui/shadcn/command";
+import { SearchInput } from "./SearchInput";
 
 export type LocationItem = {
   id: string;
@@ -20,38 +21,45 @@ export type LocationItem = {
 type Props = {
   items: LocationItem[];
   open: boolean;
+  value: string;
+  onChange: (v: string) => void;
+  onClose: () => void;
   onSelect: (item: LocationItem) => void;
-  isLoading?: boolean;
-  emptyText?: string;
-  children: React.ReactNode;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 export function LocationDropdown({
   items,
   open,
+  value,
+  onChange,
+  onClose,
   onSelect,
-  isLoading,
-  emptyText = "검색 결과가 없습니다",
-  children,
+  hasMore,
+  onLoadMore,
 }: Props) {
   return (
-    <Popover open={open}>
-      <PopoverAnchor asChild>{children}</PopoverAnchor>
-      <PopoverContent
-        align="start"
-        side="bottom"
-        className="w-[--radix-popover-trigger-width] p-0 mt-2"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <Command>
-          <CommandList className="max-h-72">
-            {isLoading ? (
-              <div className="px-4 py-3 text-sm text-slate-500">Loading...</div>
-            ) : null}
+    <Command className="p-0 bg-transparent border-0 shadow-none">
+      <Popover open={open}>
+        <PopoverAnchor asChild>
+          <div className="w-full">
+            <SearchInput
+              value={value}
+              onChange={onChange}
+              onBlur={() => window.setTimeout(() => onClose(), 0)}
+            />
+          </div>
+        </PopoverAnchor>
 
-            {!isLoading && items.length === 0 ? (
-              <CommandEmpty>{emptyText}</CommandEmpty>
-            ) : null}
+        <PopoverContent
+          align="start"
+          side="bottom"
+          className="w-[--radix-popover-trigger-width] p-0 mt-2"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <CommandList className="max-h-72">
+            <CommandEmpty>검색 결과가 없습니다</CommandEmpty>
 
             {items.length > 0 ? (
               <CommandGroup>
@@ -63,7 +71,7 @@ export function LocationDropdown({
                     onSelect={() => onSelect(item)}
                     className="cursor-pointer"
                   >
-                    <div className="flex flex-col ">
+                    <div className="flex flex-col">
                       <span className="text-sm">{item.title}</span>
                       {item.subtitle ? (
                         <span className="text-xs text-slate-500">
@@ -75,9 +83,22 @@ export function LocationDropdown({
                 ))}
               </CommandGroup>
             ) : null}
+
+            {hasMore ? (
+              <div className="p-2 border-t">
+                <button
+                  type="button"
+                  className="w-full h-8 text-sm rounded-md hover:bg-slate-50"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={onLoadMore}
+                >
+                  더보기
+                </button>
+              </div>
+            ) : null}
           </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </Command>
   );
 }

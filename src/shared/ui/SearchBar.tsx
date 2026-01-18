@@ -1,5 +1,7 @@
-import { SearchInput } from "./SearchInput";
-import { LocationDropdown, type LocationItem } from "./LocationDropdown";
+import {
+  LocationDropdown,
+  type LocationItem,
+} from "@/shared/ui/LocationDropdown";
 
 type Props = {
   value: string;
@@ -8,6 +10,8 @@ type Props = {
   onChange: (v: string) => void;
   onSelect: (item: LocationItem) => void;
   onClose: () => void;
+  hasMore?: boolean;
+  onLoadMore?: () => void;
 };
 
 export function SearchBar({
@@ -17,18 +21,19 @@ export function SearchBar({
   onChange,
   onSelect,
   onClose,
+  hasMore,
+  onLoadMore,
 }: Props) {
   return (
-    <LocationDropdown open={open} items={items} onSelect={onSelect}>
-      <div className="w-full">
-        <SearchInput
-          value={value}
-          onChange={onChange}
-          onBlur={() => {
-            window.setTimeout(() => onClose(), 0);
-          }}
-        />
-      </div>
-    </LocationDropdown>
+    <LocationDropdown
+      open={open}
+      items={items}
+      value={value}
+      onChange={onChange}
+      onSelect={onSelect}
+      onClose={onClose}
+      hasMore={hasMore}
+      onLoadMore={onLoadMore}
+    />
   );
 }

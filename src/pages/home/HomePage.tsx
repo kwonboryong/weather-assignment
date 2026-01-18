@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDebounce } from "use-debounce";
 
 import { SearchBar, BookmarkButton, ViewFallback } from "@/shared/ui";
 import type { LocationItem } from "@/shared/ui";
@@ -9,7 +10,7 @@ import {
   WeatherSummaryCardHome,
 } from "@/entities/weather/ui";
 
-import { useDetectLocation } from "@/features/detect-location/model/useDetectLocation";
+import { useCurrentCoords } from "@/features/detect-location/model/useCurrentCoordsQuery";
 import { usePlaceSearch } from "@/features/search-location/model/usePlaceSearch";
 import { useWeatherByCoords } from "@/features/weather-by-coords/model/useWeatherByCoords";
 
@@ -18,19 +19,27 @@ import {
   getViewState,
   mapOpenWeatherIcon,
   mapHourlyWeatherItems,
+  mapGeolocationError,
 } from "@/shared/lib";
+import { getGreeting } from "@/shared/lib/getGreeting";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   const { dayOfWeek, date } = getTodayLabel();
+  const greeting = getGreeting();
+
+  // 검색 더보기용 limit
+  const [limit, setLimit] = useState(20);
 
   // 검색 드롭다운
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
+  const [debouncedQuery] = useDebounce(query, 200);
+
   // 검색 훅(입력값 → 매칭 결과)
-  const { results } = usePlaceSearch(query);
+  const { results, hasMore } = usePlaceSearch(debouncedQuery, limit);
 
   // SearchBar가 받는 LocationItem[] 형태로 매핑
   const items: LocationItem[] = useMemo(() => {
@@ -42,7 +51,13 @@ export default function HomePage() {
   }, [results]);
 
   // 현재 위치 좌표
-  const { coords, error: geoError } = useDetectLocation();
+  const coordsQuery = useCurrentCoords();
+  const coords = coordsQuery.data ?? null;
+
+  // 좌표 에러
+  const geoError = coordsQuery.isError
+    ? mapGeolocationError(coordsQuery.error.message)
+    : null;
 
   // 위치 기반 날씨 조회
   const {
@@ -56,7 +71,10 @@ export default function HomePage() {
   const hourlyWeatherItems = mapHourlyWeatherItems(hourlyWeatherQuery?.data);
 
   // Fallback UI - 날씨 조회, 시간대별 날씨
-  const geo = { coords, error: geoError };
+  const geo = {
+    coords: coordsQuery.isLoading ? null : coords,
+    error: geoError,
+  };
 
   const summaryViewState = getViewState({
     geo,
@@ -77,17 +95,7 @@ export default function HomePage() {
           {/* 검색바 + 즐겨찾기 */}
           <div className="flex justify-end md:col-span-12">
             <div className="flex w-full max-w-[540px] items-center gap-3">
-              <form
-                role="search"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (items[0]) {
-                    navigate(`/location/${items[0].id}`);
-                    setOpen(false);
-                  }
-                }}
-                className="relative flex-1"
-              >
+              <div role="search" className="relative flex-1">
                 <SearchBar
                   value={query}
                   items={items}
@@ -95,14 +103,17 @@ export default function HomePage() {
                   onChange={(v) => {
                     setQuery(v);
                     setOpen(Boolean(v.trim()));
+                    setLimit((prev) => (prev === 20 ? prev : 20));
                   }}
                   onSelect={(item) => {
                     navigate(`/location/${item.id}`);
                     setOpen(false);
                   }}
                   onClose={() => setOpen(false)}
+                  hasMore={hasMore}
+                  onLoadMore={() => setLimit((prev) => prev + 20)}
                 />
-              </form>
+              </div>
 
               <BookmarkButton
                 active
@@ -114,10 +125,10 @@ export default function HomePage() {
 
           {/* 인사 */}
           <div className="mt-2 ml-3 md:mt-5 sm:ml-7 md:col-span-6">
-            <h1 className="text-4xl font-bold leading-tight select-none text-slate-900 max-sm:text-3xl md:text-5xl">
+            <h1 className="flex flex-col text-4xl font-bold leading-tight select-none md:gap-2 text-slate-900 max-sm:text-3xl md:text-5xl">
               <span className="block text-indigo-400/90">Hi,</span>
-              <span className="block">Good</span>
-              <span className="block">Morning</span>
+              <span className="block">{greeting.prefix}</span>
+              <span className="block">{greeting.word}</span>
             </h1>
           </div>
 
