@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDebounce } from "use-debounce";
 
 import { SearchBar, BookmarkButton, ViewFallback } from "@/shared/ui";
 import type { LocationItem } from "@/shared/ui";
@@ -30,8 +31,10 @@ export default function HomePage() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
+  const [debouncedQuery] = useDebounce(query, 200);
+
   // 검색 훅(입력값 → 매칭 결과)
-  const { results } = usePlaceSearch(query);
+  const { results } = usePlaceSearch(debouncedQuery);
 
   // SearchBar가 받는 LocationItem[] 형태로 매핑
   const items: LocationItem[] = useMemo(() => {
