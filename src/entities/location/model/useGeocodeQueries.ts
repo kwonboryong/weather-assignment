@@ -5,7 +5,7 @@ import {
 } from "@/entities/location/model/geocodingApi";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 import { TIME } from "@/shared/lib/query/time";
-import { geocodeKeys } from "@/shared/lib/query/query-keys/geocodeKeys";
+import { geocodeKeys } from "@/shared/lib/query/query-keys";
 
 export function useReverseGeocode(coords: Coords | null) {
   return useQuery({

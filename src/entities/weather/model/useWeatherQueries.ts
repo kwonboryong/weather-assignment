@@ -5,7 +5,7 @@ import {
 } from "@/entities/weather/model/weatherApi";
 import type { Coords } from "@/shared/lib/getCurrentPosition";
 import { TIME } from "@/shared/lib/query/time";
-import { weatherKeys } from "@/shared/lib/query/query-keys/weatherKeys";
+import { weatherKeys } from "@/shared/lib/query/query-keys";
 
 export function useCurrentWeather(coords: Coords | null) {
   return useQuery({
