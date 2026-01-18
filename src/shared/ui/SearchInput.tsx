@@ -1,3 +1,5 @@
+import { CommandInput } from "./shadcn/command";
+
 type Props = {
   value: string;
   onChange: (v: string) => void;
@@ -11,15 +13,14 @@ export function SearchInput({ value, onChange, onBlur }: Props) {
         날씨 정보를 원하는 장소를 검색하세요.
       </label>
 
-      <input
+      <CommandInput
         id="location-search"
-        type="search"
-        placeholder="장소를 검색하세요"
         value={value}
-        className="w-full px-4 text-sm bg-white border outline-none rounded-2xl h-11 focus:ring-1 focus:ring-slate-300"
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={onBlur}
+        onValueChange={onChange}
+        placeholder="장소를 검색하세요"
         autoComplete="off"
+        className="px-4 text-sm bg-white border outline-none h-11 rounded-2xl focus:border-slate-300"
+        onBlur={onBlur}
       />
     </div>
   );
