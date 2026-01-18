@@ -52,7 +52,12 @@ export function EditAliasDialog({
         </DialogHeader>
 
         <div className="mt-3">
+          <label htmlFor="alias-input" className="sr-only">
+            즐겨찾기 별칭 설정
+          </label>
+
           <Input
+            id="alias-input"
             value={value}
             placeholder="예: 회사"
             autoFocus
@@ -67,6 +72,7 @@ export function EditAliasDialog({
         <DialogFooter className="flex flex-col-reverse gap-2 mt-5 sm:flex-row sm:justify-end">
           <Button
             type="button"
+            aria-label="별칭 저장 취소"
             variant="secondary"
             className="w-full sm:w-auto"
             onClick={onClose}
@@ -75,6 +81,7 @@ export function EditAliasDialog({
           </Button>
           <Button
             type="button"
+            aria-label="별칭 저장"
             className="w-full bg-indigo-500 sm:w-auto"
             onClick={onSave}
           >

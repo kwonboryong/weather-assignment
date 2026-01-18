@@ -12,10 +12,10 @@ export function BackButton({ ariaLabel, onClick, className }: Props) {
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
-      className={`bg-white border rounded-full h-11 w-11 shrink-0 inline-flex items-center justify-center transition-colors hover:bg-indigo-100
-      } ${className ?? ""}`}
+      className={`bg-white border rounded-full h-11 w-11 shrink-0 inline-flex items-center justify-center transition-colors hover:bg-indigo-100 
+      ${className ?? ""}`}
     >
-      <ChevronLeft className="w-5 h-5" />
+      <ChevronLeft className="w-5 h-5" aria-hidden="true" />
     </button>
   );
 }

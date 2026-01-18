@@ -68,17 +68,27 @@ export default function BookmarkPage() {
 
         {/* 즐겨찾기 카드 그리드 */}
         {isEmpty ? (
-          <p className="py-10 text-sm text-center text-gray-500">
+          <p
+            role="status"
+            aria-live="polite"
+            className="py-10 text-sm text-center text-gray-500"
+          >
             아직 즐겨찾기한 지역이 없어요.
             <br />
             홈에서 지역을 검색하고, 즐겨찾기에 추가해보세요.
           </p>
         ) : (
-          <section className="grid grid-cols-1 gap-4 justify-items-center sm:gap-6 lg:grid-cols-2 xl:grid-cols-3 xl:gap-8">
+          <section
+            className="grid grid-cols-1 gap-4 justify-items-center sm:gap-6 lg:grid-cols-2 xl:grid-cols-3 xl:gap-8"
+            aria-label="즐겨찾기 목록"
+          >
             {visibleIds.map((id, idx) =>
               summaries[idx]?.isPending ? (
                 <div
                   key={id}
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
                   className="w-full max-w-[320px] h-[220px] rounded-xl bg-white/70 flex items-center justify-center text-slate-700"
                 >
                   불러오는 중...
@@ -86,6 +96,8 @@ export default function BookmarkPage() {
               ) : summaries[idx]?.isError || !summaries[idx]?.data ? (
                 <div
                   key={id}
+                  role="alert"
+                  aria-live="assertive"
                   className="w-full max-w-[320px] h-[220px] rounded-xl bg-white/70 flex flex-col items-center justify-center gap-3 text-slate-700"
                 >
                   <span className="text-sm">
@@ -93,6 +105,7 @@ export default function BookmarkPage() {
                   </span>
                   <button
                     type="button"
+                    aria-label={`${id} 즐겨찾기에서 제거`}
                     className="text-sm text-indigo-600 underline"
                     onClick={() => remove(id)}
                   >
