@@ -27,8 +27,6 @@ type Props = {
   onSelect: (item: LocationItem) => void;
   hasMore?: boolean;
   onLoadMore?: () => void;
-  isLoading?: boolean;
-  emptyText?: string;
 };
 
 export function LocationDropdown({
@@ -40,8 +38,6 @@ export function LocationDropdown({
   onSelect,
   hasMore,
   onLoadMore,
-  isLoading,
-  emptyText = "검색 결과가 없습니다",
 }: Props) {
   return (
     <Command className="p-0 bg-transparent border-0 shadow-none">
@@ -63,13 +59,7 @@ export function LocationDropdown({
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <CommandList className="max-h-72">
-            {isLoading ? (
-              <div className="px-4 py-3 text-sm text-slate-500">Loading...</div>
-            ) : null}
-
-            {!isLoading && items.length === 0 ? (
-              <CommandEmpty>{emptyText}</CommandEmpty>
-            ) : null}
+            <CommandEmpty>검색 결과가 없습니다</CommandEmpty>
 
             {items.length > 0 ? (
               <CommandGroup>

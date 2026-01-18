@@ -10,8 +10,6 @@ type Props = {
   onChange: (v: string) => void;
   onSelect: (item: LocationItem) => void;
   onClose: () => void;
-  isLoading?: boolean;
-  emptyText?: string;
   hasMore?: boolean;
   onLoadMore?: () => void;
 };
@@ -25,8 +23,6 @@ export function SearchBar({
   onClose,
   hasMore,
   onLoadMore,
-  isLoading,
-  emptyText,
 }: Props) {
   return (
     <LocationDropdown
@@ -38,8 +34,6 @@ export function SearchBar({
       onClose={onClose}
       hasMore={hasMore}
       onLoadMore={onLoadMore}
-      isLoading={isLoading}
-      emptyText={emptyText}
     />
   );
 }
