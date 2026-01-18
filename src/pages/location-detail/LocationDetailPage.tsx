@@ -9,6 +9,7 @@ import {
 
 import {
   getViewState,
+  type ViewState,
   getTodayLabel,
   mapOpenWeatherIcon,
   mapHourlyWeatherItems,
@@ -68,8 +69,8 @@ export default function LocationDetailPage() {
     error: coordsQuery.isError ? "장소 정보를 불러올 수 없습니다." : null,
   };
 
-  const noPlaceState = {
-    type: "error" as const,
+  const noPlaceState: ViewState = {
+    type: "error",
     message: "해당 장소의 정보가 제공되지 않습니다.",
   };
 
