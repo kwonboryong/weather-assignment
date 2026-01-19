@@ -1,73 +1,644 @@
-# React + TypeScript + Vite
+# Weather Assignment – 위치 기반 날씨 조회 웹 앱
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img width="800" height="500" alt="Weather Assignment – 위치 기반 날씨 조회 웹 앱 메인 이미지" src="https://github.com/user-attachments/assets/1e367bf9-526a-4bb9-a954-3b2972aa9c9e" />
 
-Currently, two official plugins are available:
+<br/>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 목차
 
-## React Compiler
+- [1. 프로젝트 소개](#1-프로젝트-소개)
+- [2. 프로젝트 실행 방법](#2-프로젝트-실행-방법)
+- [3. 기술 스택](#3-기술-스택)
+- [4. 설계 및 구조](#4-설계-및-구조)
+  - [폴더 구조(FSD 기반)](#폴더-구조fsd-기반)
+  - [라우팅 구조](#라우팅-구조)
+- [5. 디자인](#5-디자인)
+  - [Figma 디자인 시안](#-figma-디자인-시안)
+  - [디자인 방향](#디자인-방향)
+  - [공통 컴포넌트 설계](#공통-컴포넌트-설계)
+  - [반응형 디자인](#반응형-디자인)
+- [6. 기능 구현](#6-기능-구현)
+  - [1) 현재 위치 기반 날씨 조회](#1-현재-위치-기반-날씨-조회)
+  - [2) 지역 검색](#2-지역-검색)
+  - [3) 선택한 지역 날씨 조회](#3-선택한-지역-날씨-조회)
+  - [4) 즐겨찾기](#4-즐겨찾기)
+  - [5) 즐겨찾기 별칭 관리](#5-즐겨찾기-별칭-관리)
+- [7. 기술적 의사결정과 이유](#7-기술적-의사결정과-이유)
+  - [1) 데이터 패칭과 캐시: TanStack Query로 통일](#1-데이터-패칭과-캐시-tanstack-query로-통일)
+  - [2) Query Key Factory 패턴 도입](#2-query-key-factory-패턴-도입)
+  - [3) 날씨/Geocoding API 선택: OpenWeather API](#3-날씨geocoding-api-선택-openweather-api)
+  - [4) Forward Geocoding 처리 방식: 단계적 재시도 적용](#4-forward-geocoding-처리-방식-단계적-재시도-적용)
+  - [5) 즐겨찾기 저장 방식: localStorage에 식별자로 저장](#5-즐겨찾기-저장-방식-localstorage에-식별자로-저장)
+  - [6) 화면 상태 분리: 날씨 요약 영역과 시간대별 영역을 독립적으로 처리](#6-화면-상태-분리-날씨-요약-영역과-시간대별-영역을-독립적으로-처리)
+- [8. 접근성 적용](#8-접근성-적용)
+- [9. UI 상태 분기 및 예외 처리](#9-ui-상태-분기-및-예외-처리)
+  - [Home](#home)
+  - [Location Detail](#location-detail)
+  - [Bookmark](#bookmark)
+  - [화면 캡처 예시](#화면-캡처-예시)
+- [10. 트러블슈팅](#10-트러블슈팅)
+  - [1) queryKey 생성 단계에서 발생한 null 참조 에러](#1-querykey-생성-단계에서-발생한-null-참조-에러)
+  - [2) 페이지 이동 시 현재 위치 상태가 초기화되는 문제](#2-페이지-이동-시-현재-위치-상태가-초기화되는-문제)
+  - [3) 즐겨찾기 요약 카드에서 캐시를 재사용하지 못해 중복 요청이 발생한 문제](#3-즐겨찾기-요약-카드에서-캐시를-재사용하지-못해-중복-요청이-발생한-문제)
+- [11. 개선 사항](#11-개선-사항)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<br/>
 
-## Expanding the ESLint configuration
+## 1. **프로젝트 소개**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+React와 TypeScript 기반의 위치 기반 날씨 조회 웹 앱입니다.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+앱 첫 진입 시 사용자의 현재 위치를 감지해 해당 위치의 날씨를 보여주고, 제공된 대한민국 행정구역 JSON 데이터를 기반으로 지역을 검색해 상세 날씨를 확인할 수 있습니다.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+또한 선택한 지역을 즐겨찾기로 저장하고, 즐겨찾기 목록에서 각 지역의 최신 날씨를 카드로 관리할 수 있습니다.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+<br/>
+
+### **프로젝트 URL**
+
+- https://weather-assignment-omega.vercel.app/
+
+<br/><br/>
+
+## 2. 프로젝트 실행 방법
+
+**설치**
+
+```bash
+# 1. 레포지토리 클론
+git clone https://github.com/kwonboryong/weather-assignment.git
+cd weather-assignment
+
+# 2. 패키지 설치
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+<br/>
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**환경변수 설정** <br/>
+프로젝트 루트에 `.env` 파일을 생성하고, 아래 예시처럼 값을 설정하세요.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `VITE_OPENWEATHER_API_KEY`: OpenWeather에서 발급받은 API Key
+
+```bash
+VITE_OPENWEATHER_BASE_URL=https://api.openweathermap.org
+VITE_OPENWEATHER_API_KEY=YOUR_OPENWEATHER_API_KEY
+VITE_OPENWEATHER_UNITS=metric
+VITE_OPENWEATHER_LANG=kr
 ```
+
+<br/>
+
+**실행**
+
+```bash
+npm run dev
+```
+
+<br/><br/>
+
+## 3. 기술 스택
+
+| 구분         | 기술                                  |
+| ------------ | ------------------------------------- |
+| 프레임워크   | React 19.2.0                          |
+| 언어         | TypeScript                            |
+| 서버 상태    | TanStack Query                        |
+| 데이터 패칭  | Axios                                 |
+| 라우팅       | react-router-dom                      |
+| UI / Styling | Tailwind CSS, shadcn/ui, lucide-react |
+| 유틸         | date-fns, use-debounce                |
+| 배포         | Vercel                                |
+
+<br/><br/>
+
+## 4. 설계 및 구조
+
+### 폴더 구조(FSD 기반)
+
+페이지는 조립/상태 연결을 담당하고, 비즈니스 로직은 `features / entities / shared`로 분리했습니다.
+
+<br/>
+
+**FSD 레이어 분리 기준**
+
+- `pages/`: 라우트별 페이지 조립
+- `features/`: 사용자 행동 단위 기능
+- `entities/`: 도메인 단위
+- `shared/`: 공통 인프라/유틸/UI
+
+```
+src/
+├── app/                    # 앱 초기화 레이어
+│   ├── providers/          # React Query, Router 등 전역 Provider
+│   ├── routes/             # 라우팅 설정
+│   └── styles/             # 전역 CSS
+│
+├── pages/                  # 페이지 조립 레이어 (비즈니스 로직 없음)
+│   ├── home/               # 홈 페이지
+│   ├── location-detail/    # 장소 상세 페이지
+│   └── bookmark/           # 즐겨찾기 페이지
+│
+├── features/               # 사용자 행동 단위 기능
+│   ├── detect-location/    # 현재 위치 감지
+│   │   └── model/          # useDetectLocation
+│   ├── search-location/    # 장소 검색
+│   │   └── model/          # usePlaceSearch
+│   └── bookmark-location/  # 즐겨찾기 관리
+│       ├── model/          # useBookmarks, useBookmarkAliases
+│       └── ui/             # EditAliasDialog 등
+│
+├── entities/               # 도메인 레이어
+│   ├── weather/            # 날씨 도메인
+│   │   ├── model/          # weatherApi, types, useWeatherQueries
+│   │   └── ui/             # WeatherSummaryCard, HourlyWeatherSection
+│   └── location/           # 위치 도메인
+│       └── model/          # geocodingApi, useForwardGeocodeQuery
+│
+└── shared/                 # 공용 인프라
+    ├── api/                # axios instance
+    ├── assets/             # korea_districts.json
+    ├── lib/                # 유틸리티
+    │   ├── mappers/        # 데이터 변환 (mapOpenWeatherIcon 등)
+    │   └── places/         # 행정구역 파싱 (parseDistricts 등)
+    └── ui/                 # 공용 UI (SearchBar, BackButton 등)
+```
+
+<br/>
+
+### 라우팅 구조
+
+| 경로                     | 페이지             | 설명                                          |
+| ------------------------ | ------------------ | --------------------------------------------- |
+| `/`                      | HomePage           | 현재 위치 날씨, 검색, 즐겨찾기 목록           |
+| `/location/:locationKey` | LocationDetailPage | 선택한 장소의 상세 날씨 정보 및 시간대별 날씨 |
+| `/bookmark`              | BookmarkPage       | 즐겨찾기 목록 및 관리                         |
+
+<br/><br/>
+
+## 5. 디자인
+
+### [🔗 Figma 디자인 시안](https://www.figma.com/design/DSlNoe2QYIoTNKFeuF5Qn2/%EA%B3%BC%EC%A0%9C-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=0-1&t=va34Dlhf6HuG9Da8-1)
+
+<br/>
+
+### 디자인 방향
+
+홈 중심의 카드형 레이아웃으로 구성하여 **주요 기능(현재 위치, 검색, 즐겨찾기)을 한 화면에서 빠르게 탐색**할 수 있도록 했습니다.
+
+<img width="800" height="500" alt="디자인 시안   와이어프레임" src="https://github.com/user-attachments/assets/94f77fe5-9bc8-4bb8-b18f-01de478a56ff" />
+
+<br/>
+
+### 공통 컴포넌트 설계
+
+유지보수성 향상을 위해 페이지는 조립과 상태 연결만 담당하고, 재사용 가능한 UI는 아래와 같이 공통 컴포넌트로 분리해 사용했습니다.
+
+- 날씨 정보 카드(Home/Bookmark)
+- 시간대별 기온 카드 / 리스트 섹션
+- 검색바
+- 드롭다운
+- 즐겨찾기 버튼
+- 뒤로가기 버튼
+
+<br/>
+
+### 반응형 디자인
+
+- **Desktop**: 콘텐츠 폭 제한, 중앙 정렬 배치
+- **Tablet**: 12컬럼 그리드로 전환, 각 카드 6:6 배치
+- **Mobile**: 단일 컬럼 구성, `sm/md/max-sm` 브레이크 포인트로 패딩/간격/타이포 크기 조정
+
+<br/><br/>
+
+## 6. 기능 구현
+
+### 핵심 기능 리스트
+
+- 현재 위치 기반 날씨 조회 및 시간대별 날씨 표시
+- 현재 좌표를 위치명으로 변환해 홈 화면에 표시
+- 행정구역 기반 지역 검색 및 상세 화면 이동
+- 선택한 지역의 날씨 및 시간대별 날씨 조회
+- 즐겨찾기 추가 및 삭제, 목록 조회
+- 즐겨찾기 별칭 저장 및 삭제
+
+<br/>
+
+### 1. 현재 위치 기반 날씨 조회
+
+**목적**: 사용자는 앱에 진입하면 현재 위치의 날씨 및 시간대별 날씨를 바로 확인할 수 있습니다.
+
+<br/>
+
+**동작 흐름**
+
+- Geolocation으로 사용자의 현재 좌표를 조회합니다.
+- Reverse Geocoding API로 현재 좌표를 위치명으로 변환하고, 홈 화면에 표시합니다.
+- 현재 좌표를 기준으로 현재 날씨 및 시간대별 날씨를 조회하고, 홈 화면에 표시합니다.
+
+<br/>
+
+**구현 포인트**
+
+1. **데이터 요청 관리 방식**
+   - 좌표 조회, 위치명 변환, 날씨 조회를 모두 TanStack Query로 관리해 로딩과 오류 상태 처리 방식과 캐시 정책을 일관되게 유지했습니다.
+   - 각 쿼리는 필수 파라미터(좌표 또는 장소명)에 따라 실행 여부를 제어해 불필요한 호출을 줄였습니다.
+
+2. **현재 좌표 조회**
+   - 현재 좌표 조회는 Geolocation 호출 함수를 `useQuery`로 감싸 관리했고, `staleTime`을 1시간으로 설정해 홈 화면 재진입 시에도 좌표 요청이 과도하게 반복되지 않도록 했습니다.
+
+3. **위치명 표시(Reverse Geocoding)**
+   - Reverse Geocoding 요청은 `limit`을 1로 설정해 대표 결과만 사용하고, `lang`을 `"ko"`로 설정해 한국어 결과를 우선 사용했습니다.
+   - 쿼리 훅에 `enabled` 옵션을 적용해 좌표가 준비된 경우에만 요청이 실행되도록 했고, `staleTime`을 1일로 설정해 동일 좌표에 대한 변환 결과를 재사용했습니다.
+
+4. **날씨 조회**
+   - 날씨 조회는 데이터 성격에 따라 갱신 주기를 분리했습니다.
+   - 현재 날씨 조회 훅은 현재 날씨의 최신성을 위해 `staleTime`을 5분으로 두었고, 시간대별 날씨 조회는 시간대별 데이터 특성에 맞춰 `staleTime`을 30분으로 설정해 호출 빈도를 조절했습니다.
+
+5. **화면 상태 분리**
+   - 홈 화면은 날씨 정보와 시간대별 날씨 정보를 독립 영역으로 구성하고, 공통 상태 계산 함수(`getViewState`)로 각 영역의 로딩과 오류 상태를 따로 계산했습니다.
+   - 이 상태 결과를 로딩/에러 UI 컴포넌트(`ViewFallback`)에 연결해 데이터 준비 상태에 따라 자연스럽게 화면이 전환되도록 했습니다.
+
+<br/>
+
+### 2. 지역 검색
+
+**목적**: 사용자는 특정 지역을 검색해서 원하는 지역을 선택하고, 해당 지역의 날씨 정보를 확인할 수 있습니다.
+
+<br/>
+
+**동작 흐름**
+
+- 행정구역 JSON 파일인 `korea_districts.json`을 불러옵니다.
+- JSON 파일의 원본 문자열 배열을 검색 가능한 형태로 변환합니다.
+- 사용자가 검색어를 입력하면, 검색어가 포함된 지역을 필터링해서 드롭다운에 표시합니다.
+- 사용자는 드롭다운에서 지역을 선택하고, 해당 장소 상세 페이지로 이동합니다.
+
+<br/>
+
+**구현 포인트**
+
+1. **데이터 전처리**
+   - 행정구역 원본 문자열은 `parseDistricts`에서 검색과 표시가 쉬운 형태로 변환했습니다.
+   - 하이픈(`-`)으로 이어진 주소를 분리한 뒤 공백으로 다시 결합해 `label`을 만들고, 원본 문자열은 `id`와 `full`로 유지했습니다.
+     - `full`: 원본 문자열
+     - `parts`: 하이픈 기준으로 나눈 배열
+     - `label`: 화면 표시 및 검색에 사용하는 공백 결합 문자열
+
+2. **검색 로직**
+   - 검색 훅은 전체 지역 목록을 `useMemo`로 한 번만 만들고, 검색어가 있을 때만 `label.includes(검색어)`로 결과를 필터링했습니다.
+   - 결과는 `limit`만큼만 노출하고, 전체 매칭 개수를 기준으로 `hasMore`를 계산해 더보기 여부를 판단했습니다.
+   - 홈 화면은 입력 디바운스(`useDebounce`, 200밀리초)를 적용해 사용자가 타이핑하는 동안 필터링이 매번 과도하게 실행되지 않도록 했습니다.
+   - 사용자가 검색 결과를 선택하면, 선택한 항목의 `id`를 경로 파라미터로 사용해 상세 페이지로 이동합니다.
+
+<br/>
+
+### 3. 선택한 지역 날씨 조회
+
+**목적**: 사용자는 검색에서 선택한 지역의 장소명을 기반으로, 해당 지역의 날씨 및 시간대별 날씨를 조회합니다.
+
+<br/>
+
+**동작 흐름**
+
+- 사용자는 검색 결과에서 지역을 선택합니다.
+- URL 파라미터에서 검색된 장소명(`locationId`)를 가져옵니다.
+- Forward Geocoding API로 해당 장소명을 좌표로 변환합니다.
+- 변환한 좌표로 날씨 및 시간대별 날씨를 조회합니다.
+- 조회한 정보를 상세 페이지에 표시합니다.
+
+<br/>
+
+**구현 포인트**
+
+1. **조회 흐름 구성**
+   - 선택한 지역의 날씨 조회는 상세 페이지에서 경로 파라미터(`locationId`)를 기준으로 Forward Geocoding 요청을 수행해 좌표를 조회했습니다.
+   - 좌표가 준비되면 해당 좌표로 현재 날씨 및 시간대별 날씨를 조회해 화면에 표시했습니다.
+
+2. **장소 식별자 정규화 및 불필요한 요청 방지**
+   - 사용자가 선택한 장소명을 좌표로 변환하는 작업은 입력값을 OpenWeather Geocoding API 요청 형식에 맞게 하이픈을 공백으로 변환했습니다.
+   - 또한 입력값이 비어 있으면 `null`을 반환해 불필요한 요청이 발생하지 않도록 했습니다.
+
+3. **좌표 변환 재시도 전략**
+   - 좌표 변환 성공률을 높이기 위해, `forwardGeocode`는 전체 문자열로 먼저 조회한 뒤 실패하면 문자열의 뒤쪽 상세 지역을 하나씩 제거하며 재시도하도록 구성했습니다.
+   - 좌표 변환 쿼리 훅은 `enabled` 옵션으로 입력값이 있을 때만 실행되도록 제어했습니다.
+   - 또한 `staleTime`을 7일로 설정해 같은 장소 문자열에 대한 좌표 변환 결과를 오래 재사용하도록 했습니다.
+4. **데이터 미제공 상태 처리**
+   - Geocoding 요청이 성공했더라도 좌표가 `null`이면, 데이터 미제공으로 판단해 화면에 “해당 장소의 정보가 제공되지 않습니다.” 메시지가 고정으로 노출되도록 했습니다.
+
+<br/>
+
+### 4. 즐겨찾기
+
+**목적**: 사용자는 날씨를 자주 확인하는 지역을 즐겨찾기에 저장하고, 즐겨찾기 페이지에서 관리할 수 있습니다.
+
+<br/>
+
+**동작 흐름**
+
+- 사용자가 장소 상세 페이지에서 즐겨찾기 버튼을 누르면, localStorage에 해당 장소 식별자를 저장하거나 삭제합니다.
+- 사용자가 즐겨찾기 페이지로 이동하면, localStorage에 저장된 즐겨찾기 장소 목록을 가져와 각 장소의 날씨 정보를 조회하고 카드로 표시합니다.
+- 즐겨찾기 카드에서 사용자가 기대하는 값은 저장 당시의 날씨가 아니라 지금의 날씨이기 때문에, 페이지 진입 시 최신 데이터를 조회하도록 했습니다.
+
+<br/>
+
+**구현 포인트**
+
+- 즐겨찾기 기능은 localStorage의 `"weatherapp:bookmarks"` 단일 키로 관리했고, 토글 결과를 `"added"`, `"removed"`, `"limit"`으로 반환해 화면에서 후속 처리를 할 수 있도록 했습니다.
+- 즐겨찾기 등록 최대 6개 제한은 `MAX_BOOKMARKS`로 강제했고, 제한 초과 시 상세 페이지에서 토스트로 안내했습니다.
+- 즐겨찾기 페이지는 `useQueries` 기반으로 여러 항목의 요약 정보를 병렬로 조회해, 목록 렌더링이 한 항목의 상태에 종속되지 않도록 구성했습니다
+- 각 즐겨찾기 항목은 장소 식별자(id)를 좌표로 변환한 뒤, 변환한 좌표로 현재 날씨를 조회해 데이터를 구성했습니다.
+- TanStack Query `removeQueries`를 사용하여 즐겨찾기 삭제 시 해당 항목의 날씨 쿼리 캐시를 제거해 화면이 이전 데이터에 의존하지 않도록 했습니다.
+
+<br/>
+
+### 5. 즐겨찾기 별칭 관리
+
+**목적**: 사용자는 즐겨찾기한 지역에 별칭을 저장하고, 즐겨찾기 카드에서 더 직관적인 이름을 확인할 수 있습니다.
+
+<br/>
+
+**동작 흐름**
+
+- 즐겨찾기 카드 렌더링 시 각 항목의 id로 별칭을 조회합니다.
+- 사용자는 별칭을 입력하면, localStorage에 별칭을 저장하고 화면에 즉시 반영합니다.
+- 사용자가 별칭을 비우면, 해당 id의 별칭을 삭제하고 기본 위치명으로 표시합니다.
+
+<br/>
+
+**구현 포인트**
+
+- 별칭은 localStorage `"weatherapp:bookmark-aliases"`에 `{ [id]: alias }` 형태로 저장해, 즐겨찾기 목록과 별칭 데이터를 분리해서 관리했습니다.
+- 별칭 저장 시에는 입력값에 `trim()`을 적용했고, 값이 비어 있으면 해당 id의 별칭 키를 삭제해 불필요한 빈 데이터가 남지 않도록 했습니다.
+- 즐겨찾기 삭제 시에는 `removeAlias(id)`도 함께 호출해, 즐겨찾기 항목과 별칭을 함께 삭제했습니다.
+
+<br/><br/>
+
+## 7. 기술적 의사결정과 이유
+
+### 1. 데이터 패칭과 캐시: TanStack Query로 통일
+
+**결정**
+
+- 좌표 조회, 지오코딩, 날씨 조회를 TanStack Query로 관리했습니다.
+
+**이유**
+
+- 로딩과 오류 상태 처리 방식과 캐시 정책을 일관되게 유지하고, 동일 요청의 중복 호출을 줄이기 위해서 TanStack Query를 사용했습니다.
+- `enabled`, `staleTime`, `gcTime`으로 요청 조건과 재사용 범위를 명확히 제어했습니다.
+
+**트레이드오프**
+
+- 쿼리 키와 캐시 정책을 설계해야 하지만, 화면마다 상태 처리가 흩어지지 않고 안정적인 사용자 경험을 만들 수 있었습니다.
+
+<br/>
+
+### 2. Query Key Factory 패턴 도입
+
+**결정**
+
+- 쿼리 키를 도메인 단위로 중앙에서 관리하는 Query Key Factory 패턴을 도입했습니다.
+
+**이유**
+
+- 여러 컴포넌트에서 동일한 쿼리 키를 사용할 때 오타나 불일치로 인한 버그를 방지하고, 캐시 무효화와 조회를 안전하게 수행하기 위해 도입했습니다.
+- 쿼리 키 변경이 필요할 때 수정 범위를 한 곳으로 모아 유지보수를 단순화했습니다.
+- 즐겨찾기처럼 여러 요청을 조합하는 흐름에서도 동일한 키를 재사용해, 이미 쌓인 Geocoding 및 날씨 캐시를 최대한 활용할 수 있도록 했습니다.
+
+**설계 및 적용**
+
+- 쿼리 키는 도메인 단위로 분리해 관리했습니다.
+- 쿼리 키에는 객체를 그대로 넣지 않고, 원시값 기준으로 구성했습니다.
+- 좌표가 아직 없을 수 있는 화면에서도 안전하게 키를 만들 수 있도록, null-safe 키 생성 함수를 분리했습니다.
+
+**트레이드오프**
+
+- 초기에는 키 구조를 설계해야 하지만, 이후 기능 확장과 유지보수 비용을 줄일 수 있습니다.
+
+<br/>
+
+### 3. 날씨/Geocoding API 선택: OpenWeather API
+
+**결정**
+
+- OpenWeather API를 사용해 날씨 및 Geocoding을 통합 처리했습니다.
+
+**이유**
+
+- 무료 플랜에서도 Current Weather와 One Call API를 제공하여 과제 요구사항을 충족할 수 있었습니다.
+- Geocoding API도 함께 제공하여 장소명을 좌표로 변환하는 작업을 일관되게 구성할 수 있었습니다.
+- 기상청 API는 인증키 발급과 데이터 파싱이 복잡해 개발 속도와 구현 안정성을 고려해 OpenWeather를 선택했습니다.
+
+**트레이드오프**
+
+- 외부 서비스 의존성이 생기지만, 과제 범위 내에서 구현 속도와 운영 안정성을 우선했습니다.
+
+<br/>
+
+### 4. Forward Geocoding 처리 방식: 단계적 재시도 적용
+
+**결정**
+
+- 사용자가 검색한 장소의 식별자를 좌표로 변환할 때, 전체 문자열 조회에 실패하면 뒤쪽 상세 지역을 제거하며 재시도하도록 구현했습니다.
+
+**이유**
+
+- Geocoding 결과는 세부 지역 단위가 정확히 매칭되지 않는 경우가 있어, 상위 행정구역 단위로 범위를 좁혀 좌표를 찾을 확률을 높였습니다.
+
+**트레이드오프**
+
+- 요청 횟수가 늘어날 수 있기 때문에 입력값 정규화와 캐시(`staleTime`) 옵션으로 호출 빈도를 완화했습니다.
+
+<br/>
+
+### 5. 즐겨찾기 저장 방식: localStorage에 식별자로 저장
+
+**결정**
+
+- 즐겨찾기는 장소 식별자를 localStorage에 저장하고, 즐겨찾기 페이지 진입 시 최신 날씨를 조회하도록 구성했습니다.
+
+**이유**
+
+- 즐겨찾기 목록은 사용자 설정 데이터이므로 새로고침 이후에도 유지되어야 하기 때문에 localStorage로 관리했습니다.
+- 날씨 데이터는 시간이 지나면 값이 변하기 때문에 즐겨찾기 장소 식별자만 저장하고, 화면 진입 시 최신 데이터를 조회하는 방식으로 구현했습니다.
+
+**트레이드오프**
+
+- 즐겨찾기 페이지 진입 시 추가 조회가 발생하지만, 최신 데이터를 기반으로 일관된 정보를 제공할 수 있습니다.
+
+<br/>
+
+### 6. 화면 상태 분리: 날씨 요약 영역과 시간대별 영역을 독립적으로 처리
+
+**결정**
+
+- 홈 화면은 날씨 요약 정보와 시간대별 날씨를 독립 영역으로 구성하고, `getViewState`로 상태를 따로 계산했습니다.
+
+**이유**
+
+- 같은 화면에서도 데이터 준비 시점이 다르기 때문에, 한 영역의 로딩이나 오류가 다른 영역 렌더링을 막지 않도록 구성했습니다.
+- 영역별 상태를 `ViewFallback`에 연결해 화면 전환이 자연스럽게 일어나도록 했습니다.
+
+**트레이드오프**
+
+- 상태 분기 코드가 늘어나지만, 사용자에게 더 안정적인 화면 흐름을 제공할 수 있습니다.
+
+<br/>
+
+## 8. 접근성 적용
+
+키보드 탐색과 스크린리더 안내가 자연스럽게 동작하도록, 페이지 구조와 인터랙션 요소의 접근성을 보강했습니다.
+
+**페이지 구조/섹션 의미 부여**
+
+- 스크린리더 전용 제목(`h1.sr-only`)을 제공하고, 검색 영역(`role="search"`)과 시간대별 날씨 섹션(`aria-labelledby`)을 구조적으로 연결했습니다.
+
+**상태 UI 안내 개선**
+
+- `ViewFallback`에 라이브 영역 속성을 적용해 로딩/오류 메시지가 스크린리더에 자연스럽게 전달되도록 했고, 아이콘은 장식 요소로 처리했습니다.
+
+**버튼/아이콘 접근성**
+
+- 공통 버튼은 `type="button"`을 명시하고 목적을 설명하는 `aria-label`을 제공했으며, 의미 없는 아이콘 낭독을 방지했습니다.
+
+**카드/리스트 키보드 접근성**
+
+- 클릭 이동 카드는 `role="button"`, `tabIndex={0}`로 포커스 이동이 가능하게 하고, `Enter/Space`로 동작할 수 있도록 키보드 이벤트를 처리했습니다.
+
+<br/><br/>
+
+## 9. UI 상태 분기 및 예외 처리
+
+위치 감지 → 좌표 기반 날씨 조회 흐름에서 발생할 수 있는 로딩/에러/예외 상황을 사용자에게 명확히 안내하도록 UI 상태를 분기했습니다.
+
+Home에서는 날씨 요약 카드 영역과 시간대별 기온 섹션을 분리해, 각 영역별로 개별 fallback을 표시할 수 있도록 구성했습니다.
+
+즐겨찾기 페이지는 카드 단위로 로딩/에러를 분리 처리하여 일부 카드 실패가 전체 UI에 영향을 주지 않도록 했습니다.
+
+### Home
+
+| 상태                     | 의미                                                    | UI 처리                                                                                             |
+| ------------------------ | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 위치 권한 거부/위치 오류 | 브라우저 위치 권한이 거부되었거나 Geolocation 오류 발생 | 에러 메시지 표시<br/>ex) “위치 권한이 거부되었습니다. 브라우저 설정에서 위치 접근을 허용해 주세요.” |
+| 날씨 요약 로딩           | 위치/요약 데이터가 아직 준비되지 않음                   | 요약 카드 영역에 `ViewFallback` 로딩 UI 표시<br/>ex) “날씨 요약 불러오는 중…”                       |
+| 시간대별 로딩            | 시간대별 데이터가 아직 준비되지 않음                    | 시간대별 섹션에 `ViewFallback` 로딩 UI 표시<br/>ex) “시간대별 날씨 불러오는 중…”                    |
+| 정상 표시                | 데이터 준비 완료                                        | 요약 카드 + 시간대별 기온 섹션 렌더링                                                               |
+
+<br/>
+
+### Location Detail
+
+| 상태             | 의미                                                                    | UI 처리                                                        |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 장소 정보 미제공 | 선택한 장소의 좌표를 찾지 못한 경우(좌표 변환 실패) 또는 날씨 조회 실패 | 안내 문구 표시<br/>ex) “해당 장소의 정보가 제공되지 않습니다.” |
+| 정상 표시        | 좌표/날씨 데이터 정상 조회                                              | 장소명 + 날씨 요약 + 시간대별 기온 섹션 표시                   |
+
+<br/>
+
+### Bookmark
+
+| 상태               | 의미                                                   | UI 처리                                                                                               |
+| ------------------ | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| 특정 즐겨찾기 로딩 | 즐겨찾기 목록 중 일부 카드 데이터가 아직 준비되지 않음 | 해당 카드 위치에 로딩/대체 UI 표시                                                                    |
+| 특정 즐겨찾기 실패 | 좌표 변환/날씨 조회 실패                               | 안내 문구 표시 및 액션 제공<br/>ex) “날씨 정보를 불러올 수 없습니다.” + “즐겨찾기에서 제거” 액션 제공 |
+| 정상 표시          | 즐겨찾기별 요약 데이터 정상 조회                       | 즐겨찾기 카드 그리드 렌더링                                                                           |
+
+<br/>
+
+### 화면 캡처 예시
+
+- 위치 권한 거부 시 안내 메시지 노출
+  <img width="800" height="500" alt="위치 권한 거부 - 에러 UI" src="https://github.com/user-attachments/assets/ef9e9d79-e349-4251-bc35-fcd90573c1ab" />
+
+- 장소 정보 미제공 시 상세 페이지 안내 문구 표시
+  <img width="800" height="500" alt="위치 권한 거부 - 에러 UI" src="https://github.com/user-attachments/assets/674bbdb2-7df4-4514-a3c5-af8c3ad4de2d" />
+
+- 즐겨찾기에서 일부 카드 조회 실패 시 대체 UI 및 제거 액션 제공
+  <img width="800" height="500" alt="날씨 정보가 없는 장소 즐겨찾기 등록 시 UI" src="https://github.com/user-attachments/assets/020a79cf-02fc-42c4-b5ab-7e69523e7a77" />
+
+<br/><br/>
+
+## 10. 트러블슈팅
+
+### 1. queryKey 생성 단계에서 발생한 null 참조 에러
+
+**문제**
+
+- 홈 페이지 진입 직후 앱이 크래시되며 `Cannot read properties of null (reading 'lat')` 에러가 발생했습니다.
+
+**원인**
+
+- 쿼리 키를 중앙에서 관리하기 위해 Query Key Factory를 적용하면서 `weatherKeys.current(coords)`처럼 좌표 기반 queryKey를 공통화했습니다.
+- 초기 렌더에서 좌표(`coords`)가 아직 `null`인 상태인데도 TanStack Query가 `queryKey`를 먼저 평가했고, 이때 Query Key Factory 내부의 `coords.lat`에 접근하면서 에러가 발생했습니다.
+- `enabled: !!coords` 옵션은 `queryFn` 실행 여부만 제어할 뿐, `queryKey` 생성 단계에서의 null 참조는 막지 못했습니다.
+
+**해결**
+
+- Query Key Factory에 nullable 입력을 안전하게 처리하는 null-safe 생성 함수를 추가했습니다.
+- 좌표가 `null`일 수 있는 훅에서는 `For` 버전을 사용하고, 좌표가 이미 확정된 로직에서는 기존 버전을 유지해 타입 안정성을 보장했습니다.
+
+**결과**
+
+- 초기 렌더 단계에서도 크래시 없이 안정적으로 동작하며, Query Key Factory 패턴을 유지하면서 nullable 입력을 안전하게 처리할 수 있게 되었습니다.
+
+<br/>
+
+### 2. 페이지 이동 시 현재 위치 상태가 초기화되는 문제
+
+**문제**
+
+- 홈에서 현재 위치 기반 날씨를 보여주는 상태에서, 즐겨찾기 페이지로 이동했다가 다시 홈으로 돌아오면 “현재 위치 조회 중…” 로딩이 반복되었습니다.
+- 사용자가 위치를 바꾸지 않았는데도 페이지에 복귀할 때마다 위치를 다시 조회했습니다.
+
+**원인**
+
+- 초기에는 현재 위치 좌표를 `useEffect + useState` 기반 훅으로 관리하고 있었습니다.
+- 페이지 이동 후 홈이 다시 마운트되면 좌표 상태가 `null`로 초기화되면서, 위치 조회가 매번 새로 시작되는 구조였습니다.
+
+**해결**
+
+- 좌표 조회를 TanStack Query 캐시로 관리하도록 변경하고, `staleTime`과 `gcTime`을 설정하여 최근 조회한 좌표를 재사용하도록 했습니다.
+
+**결과**
+
+- 페이지 복귀 시 캐시된 좌표를 재사용하여 불필요한 로딩 상태가 제거되었습니다.
+- 위치 조회 UX가 안정화되었고, 불필요한 Geolocation API 호출이 감소했습니다.
+
+<br/>
+
+### 3. 즐겨찾기 요약 카드에서 캐시를 재사용하지 못해 중복 요청이 발생한 문제
+
+**문제**
+
+- 즐겨찾기 페이지에서 카드 수가 늘어날수록 로딩이 길어졌고, 동일한 장소에 대해 좌표 변환 요청과 날씨 조회 요청이 반복적으로 발생했습니다.
+
+**원인**
+
+- 즐겨찾기 요약 데이터를 만들기 위해 `useQueries`의 `queryFn` 내부에서 좌표 변환과 날씨 조회 API 함수를 직접 호출해 데이터를 합성하고 있었습니다.
+- 이 방식은 다른 페이지에서 이미 해당 데이터를 조회해 캐시가 존재하더라도 이를 재사용하지 못해 매번 네트워크 요청을 다시 발생시켰습니다.
+
+**해결**
+
+- 즐겨찾기 쿼리 내부에서 `queryClient.fetchQuery()`를 사용해 Query Key Factory의 queryKey를 기준으로 데이터를 조회하도록 변경했습니다.
+- 캐시에 데이터가 있으면 네트워크 없이 재사용하고, 없을 때만 요청하도록 흐름을 통일했습니다.
+
+**결과**
+
+- 즐겨찾기 페이지에서 이미 조회한 장소라면 요청이 중복 발생하지 않게 되었습니다.
+
+<br/>
+
+## 11. 개선 사항
+
+**현재 위치의 상세 주소 표시**
+
+- 현재는 좌표 기반으로 위치명을 변환해 표시하고 있으나, 위치 명이 시/구 단위로만 표시되는 경우가 있습니다.
+- Kakao Local API 등 별도의 국내 지오코딩 서비스를 연동해 동/읍/면 단위의 더 상세한 위치까지 표시하는 방향으로 개선하고 싶습니다.
+
+<br/>
+
+**Tailwind CSS 공통 디자인 컨벤션 정리**
+
+- 페이지와 컴포넌트에서 반복되는 className 패턴을 기준으로 디자인 토큰을 정리하고, 공통 스타일 유틸리티 클래스를 통해 스타일 일관성과 유지보수성을 높이고 싶습니다.
+
+<br/>
